@@ -170,7 +170,7 @@ export function Settings({ onClose }: { onClose: () => void }) {
                     <input
                       type="range" min={11} max={18} value={fontSize}
                       onChange={(e) => setFontSize(Number(e.target.value))}
-                      className="flex-1 accent-indigo-500"
+                      className="flex-1 accent-[#38a3a5]"
                     />
                     <span className="w-10 text-right font-mono text-[11px] text-neutral-400">{fontSize}px</span>
                   </div>
@@ -224,7 +224,7 @@ export function Settings({ onClose }: { onClose: () => void }) {
                   value={promptDraft}
                   onChange={(e) => setPromptDraft(e.target.value)}
                   rows={14}
-                  className="w-full resize-y rounded-lg bg-white/[0.04] px-3 py-2.5 font-mono text-[12px] leading-relaxed text-neutral-100 ring-1 ring-white/[0.06] outline-none transition focus:bg-white/[0.06] focus:ring-indigo-500/40"
+                  className="w-full resize-y rounded-lg bg-white/[0.04] px-3 py-2.5 font-mono text-[12px] leading-relaxed text-neutral-100 ring-1 ring-white/[0.06] outline-none transition focus:bg-white/[0.06] focus:ring-[#38a3a5]/50"
                 />
                 <div className="mt-2 flex items-center justify-between">
                   <button
@@ -239,12 +239,12 @@ export function Settings({ onClose }: { onClose: () => void }) {
                   <button
                     onClick={handleSavePrompt}
                     disabled={!promptDirty}
-                    className="rounded-md bg-indigo-600 px-3 py-1.5 text-[11px] font-medium text-white hover:bg-indigo-500 disabled:opacity-40"
+                    className="rounded-md bg-[#38a3a5] px-3 py-1.5 text-[11px] font-medium text-white hover:bg-[#57cc99] disabled:opacity-40"
                   >
                     {saved && !promptDirty ? 'Zapisano ✓' : 'Zapisz prompt'}
                   </button>
                 </div>
-                <p className="mt-3 rounded-md bg-amber-500/10 px-3 py-2 text-[10.5px] leading-relaxed text-amber-200/80 ring-1 ring-amber-500/20">
+                <p className="mt-3 rounded-md bg-[#faa307]/10 px-3 py-2 text-[10.5px] leading-relaxed text-[#ffba08]/80 ring-1 ring-amber-500/20">
                   Uwaga: jeśli usuniesz instrukcję o formacie <code className="font-mono">```język:ścieżka```</code>, podgląd diffów (kafelki Accept/Reject) przestanie działać — AI nie zwróci zmian w rozpoznawanym formacie.
                 </p>
               </Section>
@@ -261,20 +261,20 @@ export function Settings({ onClose }: { onClose: () => void }) {
                   desc="Token jest przechowywany w macOS Keychain — nigdy nie opuszcza Twojego komputera poza komunikacją z GitHub API."
                 >
                   {user ? (
-                    <div className="flex items-center justify-between rounded-lg bg-emerald-500/10 px-3 py-2.5 ring-1 ring-emerald-500/30">
+                    <div className="flex items-center justify-between rounded-lg bg-[#57cc99]/10 px-3 py-2.5 ring-1 ring-[#57cc99]/40">
                       <div className="flex items-center gap-3">
                         <img src={user.avatarUrl} alt="" className="h-7 w-7 rounded-full ring-1 ring-emerald-500/40" />
                         <div>
-                          <div className="text-[12px] font-medium text-emerald-200">{user.name || user.login}</div>
-                          <div className="text-[10px] text-emerald-400/70">@{user.login}</div>
+                          <div className="text-[12px] font-medium text-[#c7f9cc]">{user.name || user.login}</div>
+                          <div className="text-[10px] text-[#57cc99]/70">@{user.login}</div>
                         </div>
                       </div>
-                      <button onClick={handleClearToken} className="rounded-md px-2 py-1 text-[11px] text-emerald-300/80 hover:bg-emerald-500/10 hover:text-emerald-100">
+                      <button onClick={handleClearToken} className="rounded-md px-2 py-1 text-[11px] text-[#80ed99]/80 hover:bg-[#57cc99]/10 hover:text-emerald-100">
                         Wyloguj
                       </button>
                     </div>
                   ) : hasToken ? (
-                    <div className="flex items-center justify-between rounded-lg bg-amber-500/10 px-3 py-2 text-[11px] text-amber-200 ring-1 ring-amber-500/30">
+                    <div className="flex items-center justify-between rounded-lg bg-[#faa307]/10 px-3 py-2 text-[11px] text-[#ffba08] ring-1 ring-[#faa307]/40">
                       <span>Token zapisany, ale nie udało się pobrać profilu</span>
                       <button onClick={handleClearToken} className="underline">Usuń</button>
                     </div>
@@ -290,9 +290,9 @@ export function Settings({ onClose }: { onClose: () => void }) {
                         value={token}
                         onChange={(e) => setToken(e.target.value)}
                         placeholder="ghp_..."
-                        className="w-full rounded-lg bg-white/[0.04] px-3 py-2 text-[12px] text-neutral-100 ring-1 ring-white/[0.06] placeholder-neutral-600 outline-none transition focus:bg-white/[0.06] focus:ring-indigo-500/40"
+                        className="w-full rounded-lg bg-white/[0.04] px-3 py-2 text-[12px] text-neutral-100 ring-1 ring-white/[0.06] placeholder-neutral-600 outline-none transition focus:bg-white/[0.06] focus:ring-[#38a3a5]/50"
                       />
-                      <button onClick={handleSaveToken} disabled={!token.trim()} className="w-full rounded-lg bg-indigo-600 px-3 py-2 text-[12px] font-medium text-white transition hover:bg-indigo-500 disabled:opacity-40">
+                      <button onClick={handleSaveToken} disabled={!token.trim()} className="w-full rounded-lg bg-[#38a3a5] px-3 py-2 text-[12px] font-medium text-white transition hover:bg-[#57cc99] disabled:opacity-40">
                         {saved ? 'Zapisano ✓' : 'Zapisz token'}
                       </button>
                     </div>
@@ -311,7 +311,7 @@ export function Settings({ onClose }: { onClose: () => void }) {
                           value={repoFilter}
                           onChange={(e) => setRepoFilter(e.target.value)}
                           placeholder="Szukaj repo..."
-                          className="w-full rounded-lg bg-white/[0.04] px-3 py-1.5 text-[12px] text-neutral-100 ring-1 ring-white/[0.06] placeholder-neutral-600 outline-none focus:bg-white/[0.06] focus:ring-indigo-500/40"
+                          className="w-full rounded-lg bg-white/[0.04] px-3 py-1.5 text-[12px] text-neutral-100 ring-1 ring-white/[0.06] placeholder-neutral-600 outline-none focus:bg-white/[0.06] focus:ring-[#38a3a5]/50"
                         />
                         {cloneError && (
                           <div className="rounded-md bg-red-500/10 px-3 py-2 text-[11px] text-red-300 ring-1 ring-red-500/30">
@@ -324,7 +324,7 @@ export function Settings({ onClose }: { onClose: () => void }) {
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-1.5">
                                   <span className="truncate text-neutral-200">{r.fullName}</span>
-                                  {r.isPrivate && <span className="rounded bg-amber-500/15 px-1 py-0.5 text-[9px] text-amber-300">private</span>}
+                                  {r.isPrivate && <span className="rounded bg-[#faa307]/15 px-1 py-0.5 text-[9px] text-[#ffba08]">private</span>}
                                 </div>
                                 {r.description && <div className="truncate text-[10px] text-neutral-500">{r.description}</div>}
                               </div>
@@ -332,7 +332,7 @@ export function Settings({ onClose }: { onClose: () => void }) {
                                 <button
                                   onClick={() => handleOpenRepo(r)}
                                   disabled={cloning === r.fullName}
-                                  className="rounded bg-indigo-600 px-2 py-1 text-[10.5px] font-medium text-white hover:bg-indigo-500 disabled:opacity-40"
+                                  className="rounded bg-[#38a3a5] px-2 py-1 text-[10.5px] font-medium text-white hover:bg-[#57cc99] disabled:opacity-40"
                                 >
                                   {cloning === r.fullName ? 'Klonuję...' : 'Otwórz w aplikacji'}
                                 </button>
@@ -393,7 +393,7 @@ function Toggle({
       <button
         type="button"
         onClick={() => onChange(!checked)}
-        className={`mt-0.5 h-4 w-7 shrink-0 rounded-full transition ${checked ? 'bg-indigo-600' : 'bg-white/[0.08]'}`}
+        className={`mt-0.5 h-4 w-7 shrink-0 rounded-full transition ${checked ? 'bg-[#38a3a5]' : 'bg-white/[0.08]'}`}
       >
         <span className={`block h-3 w-3 rounded-full bg-white shadow-sm transition ${checked ? 'ml-3' : 'ml-0.5'}`} />
       </button>

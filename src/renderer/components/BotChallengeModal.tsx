@@ -22,7 +22,7 @@ export function BotChallengeModal({ kind, retryAfter, url, message, onClose, onR
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="glass w-[460px] rounded-2xl p-6 ring-1 ring-white/10 shadow-2xl">
         <div className="mb-3 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 ring-1 ring-amber-500/40">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#faa307]/15 ring-1 ring-amber-500/40">
             <span className="text-lg">⚠</span>
           </div>
           <h3 className="text-sm font-medium text-neutral-100">
@@ -34,7 +34,7 @@ export function BotChallengeModal({ kind, retryAfter, url, message, onClose, onR
         <p className="mb-4 text-[12px] leading-relaxed text-neutral-300">{message}</p>
 
         {kind === 'rate' && secondsLeft > 0 && (
-          <div className="mb-4 rounded-lg bg-amber-500/10 px-3 py-2 text-center text-[12px] text-amber-200 ring-1 ring-amber-500/30">
+          <div className="mb-4 rounded-lg bg-[#faa307]/10 px-3 py-2 text-center text-[12px] text-[#ffba08] ring-1 ring-[#faa307]/40">
             Możesz spróbować ponownie za <span className="font-mono font-medium">{secondsLeft}s</span>
           </div>
         )}
@@ -69,7 +69,7 @@ export function BotChallengeModal({ kind, retryAfter, url, message, onClose, onR
           <button
             onClick={onRetry}
             disabled={kind === 'rate' && secondsLeft > 0}
-            className="flex-1 rounded-lg bg-indigo-600 px-3 py-2 text-[12px] font-medium text-white hover:bg-indigo-500 disabled:opacity-40"
+            className="flex-1 rounded-lg bg-[#38a3a5] px-3 py-2 text-[12px] font-medium text-white hover:bg-[#57cc99] disabled:opacity-40"
           >
             {kind === 'rate' && secondsLeft > 0 ? `Czekaj ${secondsLeft}s` : 'Spróbuj ponownie'}
           </button>

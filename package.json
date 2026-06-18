@@ -1,6 +1,6 @@
 {
   "name": "ai-ide",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "description": "Lokalna aplikacja AI IDE dla macOS \u2013 wiele modeli AI przez sesje przegl\u0105darki, bez oficjalnych API",
   "main": "dist-electron/electron/main.js",
   "author": "AI IDE",

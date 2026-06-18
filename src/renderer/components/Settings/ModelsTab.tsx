@@ -102,8 +102,8 @@ export function ModelsTab() {
           <div className="flex items-center gap-2">
             <span className="text-[13px] font-medium text-neutral-200">Ollama (lokalnie, free)</span>
             {ollamaReady === null && <span className="rounded bg-white/[0.06] px-1.5 py-0.5 text-[10px] text-neutral-400">sprawdzam...</span>}
-            {ollamaReady === true && <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-[10px] text-emerald-300">✓ Działa</span>}
-            {ollamaReady === false && <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] text-amber-300">Nie znaleziono</span>}
+            {ollamaReady === true && <span className="rounded bg-[#57cc99]/15 px-1.5 py-0.5 text-[10px] text-[#80ed99]">✓ Działa</span>}
+            {ollamaReady === false && <span className="rounded bg-[#faa307]/15 px-1.5 py-0.5 text-[10px] text-[#ffba08]">Nie znaleziono</span>}
           </div>
           <button
             onClick={refreshOllama}
@@ -118,8 +118,8 @@ export function ModelsTab() {
         </p>
 
         {ollamaReady === false && (
-          <div className="mb-3 rounded-md bg-amber-500/10 p-3 ring-1 ring-amber-500/30">
-            <div className="mb-2 text-[11px] text-amber-200">
+          <div className="mb-3 rounded-md bg-[#faa307]/10 p-3 ring-1 ring-[#faa307]/40">
+            <div className="mb-2 text-[11px] text-[#ffba08]">
               Ollama nie jest zainstalowana lub nie działa. Zainstaluj raz — potem aplikacja sama łączy się z lokalnym serwerem.
             </div>
             <button
@@ -137,7 +137,7 @@ export function ModelsTab() {
             <select
               value={ollamaModel}
               onChange={(e) => setOllamaModel(e.target.value)}
-              className="mb-3 w-full rounded-md bg-white/[0.04] px-3 py-1.5 text-[12px] text-neutral-100 ring-1 ring-white/[0.08] outline-none focus:ring-indigo-500/40"
+              className="mb-3 w-full rounded-md bg-white/[0.04] px-3 py-1.5 text-[12px] text-neutral-100 ring-1 ring-white/[0.08] outline-none focus:ring-[#38a3a5]/50"
             >
               {OLLAMA_MODELS.map((m) => (
                 <option key={m.name} value={m.name}>
@@ -170,8 +170,8 @@ export function ModelsTab() {
         <div className="mb-1 flex items-center justify-between">
           <span className="text-[13px] font-medium text-neutral-200">Groq (Llama 3.3 70B)</span>
           {hasGroq
-            ? <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-[10px] text-emerald-300">✓ Klucz zapisany</span>
-            : <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] text-amber-300">Wymaga klucza</span>}
+            ? <span className="rounded bg-[#57cc99]/15 px-1.5 py-0.5 text-[10px] text-[#80ed99]">✓ Klucz zapisany</span>
+            : <span className="rounded bg-[#faa307]/15 px-1.5 py-0.5 text-[10px] text-[#ffba08]">Wymaga klucza</span>}
         </div>
         <p className="mb-3 text-[10.5px] leading-relaxed text-neutral-500">
           Najszybszy darmowy LLM (do 500 tok/s). Wymaga DARMOWEGO klucza z console.groq.com – wystarczy email, nie podajesz karty.
@@ -193,12 +193,12 @@ export function ModelsTab() {
               onChange={(e) => setGroqKey(e.target.value)}
               type="password"
               placeholder="gsk_..."
-              className="mb-2 w-full rounded-md bg-white/[0.04] px-3 py-1.5 text-[12px] text-neutral-100 ring-1 ring-white/[0.08] outline-none focus:ring-indigo-500/40"
+              className="mb-2 w-full rounded-md bg-white/[0.04] px-3 py-1.5 text-[12px] text-neutral-100 ring-1 ring-white/[0.08] outline-none focus:ring-[#38a3a5]/50"
             />
             <button
               onClick={saveGroq}
               disabled={!groqKey.trim()}
-              className="w-full rounded-md bg-indigo-600 px-3 py-1.5 text-[11px] font-medium text-white hover:bg-indigo-500 disabled:opacity-40"
+              className="w-full rounded-md bg-[#38a3a5] px-3 py-1.5 text-[11px] font-medium text-white hover:bg-[#57cc99] disabled:opacity-40"
             >
               Zapisz klucz
             </button>
@@ -245,13 +245,13 @@ function OllamaModelRow({
   onActivate: () => void;
 }) {
   return (
-    <div className={`rounded-lg p-2.5 ring-1 transition ${isActive ? 'bg-indigo-500/10 ring-indigo-500/30' : 'bg-white/[0.02] ring-white/[0.04]'}`}>
+    <div className={`rounded-lg p-2.5 ring-1 transition ${isActive ? 'bg-[#57cc99]/10 ring-[#38a3a5]/40' : 'bg-white/[0.02] ring-white/[0.04]'}`}>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
             <span className="text-[12px] font-medium text-neutral-100">{model.label}</span>
-            {model.recommended === 'code'    && <span className="rounded bg-amber-500/20 px-1.5 py-0.5 text-[9px] font-medium text-amber-200">⭐ REKOMENDOWANY DO KODU</span>}
-            {model.recommended === 'general' && <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-medium text-emerald-200">⭐ REKOMENDOWANY</span>}
+            {model.recommended === 'code'    && <span className="rounded bg-[#faa307]/20 px-1.5 py-0.5 text-[9px] font-medium text-[#ffba08]">⭐ REKOMENDOWANY DO KODU</span>}
+            {model.recommended === 'general' && <span className="rounded bg-[#57cc99]/20 px-1.5 py-0.5 text-[9px] font-medium text-[#c7f9cc]">⭐ REKOMENDOWANY</span>}
             {installed && <span className="rounded bg-white/[0.08] px-1.5 py-0.5 text-[9px] text-neutral-300">zainstalowany</span>}
           </div>
           <div className="mt-0.5 text-[10.5px] text-neutral-500">{model.desc}</div>
@@ -262,11 +262,11 @@ function OllamaModelRow({
         <div className="flex shrink-0 flex-col gap-1">
           {pulling ? (
             <>
-              <div className="w-28 text-right text-[10px] text-amber-300">
+              <div className="w-28 text-right text-[10px] text-[#ffba08]">
                 {pulling.percent ?? 0}% · {pulling.status?.slice(0, 14) || ''}
               </div>
               <div className="h-1 w-28 overflow-hidden rounded-full bg-black/30">
-                <div className="h-full bg-amber-500 transition-all" style={{ width: `${pulling.percent || 0}%` }} />
+                <div className="h-full bg-[#faa307] transition-all" style={{ width: `${pulling.percent || 0}%` }} />
               </div>
               <button onClick={onCancel} className="rounded bg-white/[0.04] px-2 py-0.5 text-[10px] text-neutral-300 hover:bg-white/[0.08]">
                 Anuluj
@@ -277,7 +277,7 @@ function OllamaModelRow({
               <button
                 onClick={onActivate}
                 disabled={isActive}
-                className={`rounded px-2 py-1 text-[10.5px] font-medium ${isActive ? 'bg-emerald-600/30 text-emerald-200' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`}
+                className={`rounded px-2 py-1 text-[10.5px] font-medium ${isActive ? 'bg-[#38a3a5]/30 text-[#c7f9cc]' : 'bg-[#38a3a5] text-white hover:bg-[#57cc99]'}`}
               >
                 {isActive ? '✓ Aktywny' : 'Użyj'}
               </button>
@@ -286,7 +286,7 @@ function OllamaModelRow({
               </button>
             </>
           ) : (
-            <button onClick={onPull} className="rounded bg-indigo-600 px-2 py-1 text-[10.5px] font-medium text-white hover:bg-indigo-500">
+            <button onClick={onPull} className="rounded bg-[#38a3a5] px-2 py-1 text-[10.5px] font-medium text-white hover:bg-[#57cc99]">
               Pobierz
             </button>
           )}
@@ -299,8 +299,8 @@ function OllamaModelRow({
 function ModelCard({ name, status, statusKind, desc, provider }:
   { name: string; status: string; statusKind: 'ok' | 'warn' | 'err'; desc: string; provider?: string }) {
   const colors = {
-    ok: 'bg-emerald-500/15 text-emerald-300',
-    warn: 'bg-amber-500/15 text-amber-300',
+    ok: 'bg-[#57cc99]/15 text-[#80ed99]',
+    warn: 'bg-[#faa307]/15 text-[#ffba08]',
     err: 'bg-red-500/15 text-red-300',
   };
   return (

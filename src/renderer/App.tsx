@@ -140,14 +140,14 @@ export function App() {
   };
 
   return (
-    <div className="flex h-screen w-screen flex-col bg-[#0a0a0c] text-neutral-100">
+    <div className="flex h-screen w-screen flex-col bg-[#0a1216] text-neutral-100">
       <div
         className="flex shrink-0 items-center justify-between border-b border-white/[0.06] py-2.5 pr-3"
         style={{ paddingLeft: 88, WebkitAppRegion: 'drag' } as React.CSSProperties}
       >
         {/* LEWA: logo + projekt + akcje projektu */}
         <div className="flex min-w-0 items-center gap-2" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
-          <div className="h-2 w-2 shrink-0 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
+          <div className="h-2 w-2 shrink-0 rounded-full bg-[#57cc99] shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
           <span className="text-[13px] font-medium tracking-tight text-neutral-200" style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}>AI IDE</span>
           {rootPath && (
             <>

@@ -17,6 +17,8 @@ interface ProjectState {
   selectedFilePaths: Set<string>;
   activeFilePath: string | null;
   recentProjects: string[];
+  /** Bumpowany po każdym udanym zapisie pliku. Słuchany przez PreviewPanel w trybie Split → reload iframe. */
+  fileSaveCounter: number;
 
   openProject: () => Promise<void>;
   loadProjectFromPath: (absPath: string) => Promise<void>;
@@ -24,6 +26,8 @@ interface ProjectState {
   setActiveFile: (absolutePath: string) => void;
   refreshTree: () => Promise<void>;
   removeRecent: (path: string) => void;
+  /** Wywołane po pomyślnym zapisie pliku (CodeEditor, AI auto-apply). */
+  bumpFileSaveCounter: () => void;
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
@@ -32,6 +36,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   selectedFilePaths: new Set(),
   activeFilePath: null,
   recentProjects: loadRecent(),
+  fileSaveCounter: 0,
 
   openProject: async () => {
     const selectedPath = await window.aiIDE.fs.openProjectDialog();
@@ -74,5 +79,9 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     if (!rootPath) return;
     const tree = await window.aiIDE.fs.readDirectory(rootPath);
     set({ fileTree: tree });
+  },
+
+  bumpFileSaveCounter: () => {
+    set({ fileSaveCounter: get().fileSaveCounter + 1 });
   },
 }));

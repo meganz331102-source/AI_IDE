@@ -92,7 +92,7 @@ export function PrivacyTab() {
             type="checkbox"
             checked={enabled}
             onChange={(e) => setEnabled(e.target.checked)}
-            className="h-3.5 w-3.5 accent-indigo-500"
+            className="h-3.5 w-3.5 accent-[#38a3a5]"
           />
           <span className="text-[12px] text-neutral-200">Włącz proxy dla zapytań AI</span>
         </label>
@@ -101,7 +101,7 @@ export function PrivacyTab() {
           value={proxyUrl}
           onChange={(e) => setProxyUrl(e.target.value)}
           placeholder="http://127.0.0.1:40000  (np. WARP)   |   http://127.0.0.1:8118  (Tor mostek)"
-          className="w-full rounded-lg bg-white/[0.04] px-3 py-2 font-mono text-[11px] text-neutral-100 ring-1 ring-white/[0.06] placeholder-neutral-600 outline-none focus:bg-white/[0.06] focus:ring-indigo-500/40"
+          className="w-full rounded-lg bg-white/[0.04] px-3 py-2 font-mono text-[11px] text-neutral-100 ring-1 ring-white/[0.06] placeholder-neutral-600 outline-none focus:bg-white/[0.06] focus:ring-[#38a3a5]/50"
         />
 
         <div className="mt-2 flex gap-2">
@@ -114,7 +114,7 @@ export function PrivacyTab() {
           </button>
           <button
             onClick={applyProxy}
-            className="flex-1 rounded-md bg-indigo-600 px-3 py-1.5 text-[11px] font-medium text-white hover:bg-indigo-500"
+            className="flex-1 rounded-md bg-[#38a3a5] px-3 py-1.5 text-[11px] font-medium text-white hover:bg-[#57cc99]"
           >
             Zapisz i zastosuj
           </button>
@@ -122,7 +122,7 @@ export function PrivacyTab() {
 
         {testResult && (
           <div className={`mt-3 rounded-md px-3 py-2 text-[11px] ring-1 ${
-            testResult.ok ? 'bg-emerald-500/10 text-emerald-200 ring-emerald-500/30' : 'bg-red-500/10 text-red-300 ring-red-500/30'
+            testResult.ok ? 'bg-[#57cc99]/10 text-[#c7f9cc] ring-[#57cc99]/40' : 'bg-red-500/10 text-red-300 ring-red-500/30'
           }`}>
             {testResult.msg}
           </div>
@@ -163,13 +163,13 @@ function Card({ title, desc, tip, href }: { title: string; desc: string; tip: st
         <span className="text-[12px] font-medium text-neutral-200">{title}</span>
         <button
           onClick={() => window.aiIDE.shell.openExternal(href)}
-          className="rounded bg-indigo-600/90 px-2 py-0.5 text-[10px] font-medium text-white hover:bg-indigo-500"
+          className="rounded bg-[#38a3a5]/90 px-2 py-0.5 text-[10px] font-medium text-white hover:bg-[#57cc99]"
         >
           Pobierz
         </button>
       </div>
       <div className="text-[10.5px] leading-relaxed text-neutral-400">{desc}</div>
-      <div className="mt-1 rounded bg-black/30 px-2 py-1 font-mono text-[10px] text-amber-200/80">{tip}</div>
+      <div className="mt-1 rounded bg-black/30 px-2 py-1 font-mono text-[10px] text-[#ffba08]/80">{tip}</div>
     </div>
   );
 }

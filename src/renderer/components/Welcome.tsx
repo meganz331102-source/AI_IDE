@@ -18,7 +18,7 @@ export function Welcome({ onOpenRepo, onOpenSettings }: Props) {
   }, []);
 
   return (
-    <div className="flex h-full flex-col items-center overflow-y-auto bg-[#0a0a0c] p-8">
+    <div className="flex h-full flex-col items-center overflow-y-auto bg-[#0a1216] p-8">
       <div className="w-full max-w-2xl pt-6">
         <div className="mb-10 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-[0_0_40px_rgba(99,102,241,0.4)]">
@@ -73,7 +73,7 @@ export function Welcome({ onOpenRepo, onOpenSettings }: Props) {
         <div className="rounded-xl bg-white/[0.02] p-4 ring-1 ring-white/[0.04]">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-[10.5px] uppercase tracking-wide text-neutral-500">Skróty klawiszowe</span>
-            <button onClick={onOpenSettings} className="text-[10.5px] text-indigo-400 hover:text-indigo-300">
+            <button onClick={onOpenSettings} className="text-[10.5px] text-[#57cc99] hover:text-[#80ed99]">
               Wszystkie ustawienia →
             </button>
           </div>
@@ -98,15 +98,15 @@ function Action({ title, desc, shortcut, onClick, primary, badge }:
       onClick={onClick}
       className={`group rounded-xl p-4 text-left transition ${
         primary
-          ? 'bg-indigo-600 hover:bg-indigo-500 ring-1 ring-indigo-400/30 shadow-lg shadow-indigo-600/20'
+          ? 'bg-[#38a3a5] hover:bg-[#57cc99] ring-1 ring-[#57cc99]/40 shadow-lg shadow-indigo-600/20'
           : 'bg-white/[0.04] hover:bg-white/[0.07] ring-1 ring-white/[0.06]'
       }`}
     >
       <div className="mb-1 flex items-center justify-between">
         <span className={`text-[13px] font-medium ${primary ? 'text-white' : 'text-neutral-200'}`}>{title}</span>
-        {badge && <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[9px] text-emerald-300">{badge}</span>}
+        {badge && <span className="rounded bg-[#57cc99]/20 px-1.5 py-0.5 text-[9px] text-[#80ed99]">{badge}</span>}
       </div>
-      <div className={`text-[10.5px] ${primary ? 'text-indigo-200' : 'text-neutral-500'}`}>{desc}</div>
+      <div className={`text-[10.5px] ${primary ? 'text-[#c7f9cc]' : 'text-neutral-500'}`}>{desc}</div>
       {shortcut && (
         <div className={`mt-2 inline-block rounded px-1.5 py-0.5 text-[9px] font-mono ${primary ? 'bg-white/15 text-indigo-100' : 'bg-white/[0.05] text-neutral-500'}`}>
           {shortcut}

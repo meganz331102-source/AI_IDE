@@ -2,62 +2,85 @@
 @tailwind components;
 @tailwind utilities;
 
+/* === Paleta projektu (v2.9.0) ===
+   I  #22577a  – deep teal     (secondary panels, accent borders)
+   II #38a3a5  – mid teal      (PRIMARY action, focus rings)
+   III#57cc99  – mint green    (hover, success base)
+   IV #80ed99  – light green   (highlights, status dots)
+   V  #c7f9cc  – pastel mint   (very light text accents)
+   warn:
+      #f48c06  – dark orange
+      #faa307  – orange
+      #ffba08  – amber flame   */
+:root {
+  --c-deep:   #22577a;
+  --c-teal:   #38a3a5;
+  --c-green:  #57cc99;
+  --c-mint:   #80ed99;
+  --c-glow:   #c7f9cc;
+  --c-warn-d: #f48c06;
+  --c-warn:   #faa307;
+  --c-amber:  #ffba08;
+  --bg-0:     #0a1216;   /* okno aplikacji */
+  --bg-1:     #0d1820;   /* panele */
+  --bg-2:     #11202a;   /* nieco jaśniejsze (hover na panelu) */
+}
+
 html, body, #root {
   height: 100%;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-  background: #0a0a0c;
+  background: var(--bg-0);
+  color: #e6f1f0;
 }
 
-/* === Scrollbars === */
-/* Default — discreet, dark, rounded with subtle glow on hover */
+/* === Scrollbars (paleta) === */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.12) transparent;
+  scrollbar-color: rgba(56,163,165,0.35) transparent;
 }
 ::-webkit-scrollbar { width: 12px; height: 12px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+  background: linear-gradient(180deg, rgba(56,163,165,0.45), rgba(34,87,122,0.55));
   border-radius: 8px;
   border: 3px solid transparent;
   background-clip: padding-box;
   transition: background 120ms ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(99,102,241,0.55), rgba(99,102,241,0.35));
+  background: linear-gradient(180deg, rgba(87,204,153,0.75), rgba(56,163,165,0.65));
   background-clip: padding-box;
   border: 3px solid transparent;
-  box-shadow: inset 0 0 6px rgba(99,102,241,0.4);
+  box-shadow: inset 0 0 8px rgba(128,237,153,0.35);
 }
 ::-webkit-scrollbar-thumb:active {
-  background: rgba(99,102,241,0.7);
+  background: linear-gradient(180deg, rgba(128,237,153,0.85), rgba(87,204,153,0.75));
   background-clip: padding-box;
   border: 3px solid transparent;
 }
 ::-webkit-scrollbar-corner { background: transparent; }
 
-/* Thin variant — for narrow side panels, dropdowns, code editor gutters */
-.scrollbar-thin { scrollbar-width: thin; }
-.scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+/* Thin wariant – dla wąskich paneli i list */
+.scrollbar-thin { scrollbar-width: thin; scrollbar-color: rgba(56,163,165,0.45) transparent; }
+.scrollbar-thin::-webkit-scrollbar { width: 7px; height: 7px; }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.14);
+  background: rgba(56,163,165,0.5);
   border-radius: 4px;
   border: 1px solid transparent;
   background-clip: padding-box;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: rgba(99,102,241,0.55);
+  background: rgba(87,204,153,0.75);
   background-clip: padding-box;
-  border: 1px solid transparent;
 }
 
-/* Auto-hide variant — appears only on hover/scroll of parent */
+/* Auto-hide wariant */
 .scrollbar-auto::-webkit-scrollbar-thumb { opacity: 0; transition: opacity 200ms; }
 .scrollbar-auto:hover::-webkit-scrollbar-thumb { opacity: 1; }
 
-/* Splitter handle */
+/* Splitter handle (paleta) */
 .splitter {
   position: relative;
   background: transparent;
@@ -69,29 +92,31 @@ html, body, #root {
   position: absolute;
   top: 0; bottom: 0; left: 50%;
   width: 1px;
-  background: rgba(255,255,255,0.06);
+  background: rgba(56,163,165,0.15);
   transform: translateX(-50%);
+  transition: width 120ms ease, background 120ms ease;
 }
-.splitter:hover::after, .splitter.active::after {
-  background: rgba(99,102,241,0.6);
+.splitter:hover::after,
+.splitter.active::after {
   width: 2px;
-  box-shadow: 0 0 8px rgba(99,102,241,0.4);
+  background: var(--c-teal);
+  box-shadow: 0 0 6px rgba(56,163,165,0.6);
 }
 
-/* Subtle frosted card */
+/* Frosted */
 .glass {
-  background: rgba(20,20,24,0.72);
+  background: rgba(13,24,32,0.78);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
 
-/* Soft button focus */
-button:focus-visible, input:focus-visible, textarea:focus-visible {
-  outline: 2px solid rgba(99,102,241,0.5);
+/* Focus */
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid rgba(56,163,165,0.55);
   outline-offset: 1px;
 }
 
-/* Hide focus on app drag region */
+/* Drag region */
 *[style*="drag"] { user-select: none; }
 
 /* === Markdown messages === */
@@ -99,7 +124,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible {
   line-height: 1.55;
   font-size: 13px;
   word-wrap: break-word;
-  overflow-wrap: anywhere;  /* długie URL / wyrazy bez spacji zawijają się */
+  overflow-wrap: anywhere;
   min-width: 0;
 }
 .md-message p { margin: 0.5em 0; }
@@ -113,20 +138,20 @@ button:focus-visible, input:focus-visible, textarea:focus-visible {
 .md-message li { margin: 0.15em 0; }
 .md-message strong { font-weight: 600; color: #fff; }
 .md-message em { font-style: italic; }
-.md-message a { color: #818cf8; text-decoration: underline; text-underline-offset: 2px; }
-.md-message a:hover { color: #a5b4fc; }
+.md-message a { color: var(--c-mint); text-decoration: underline; text-underline-offset: 2px; }
+.md-message a:hover { color: var(--c-glow); }
 .md-message code:not(pre code) {
-  background: rgba(255,255,255,0.08);
+  background: rgba(56,163,165,0.18);
   border-radius: 4px;
   padding: 1px 5px;
   font-family: 'SF Mono', Menlo, monospace;
   font-size: 0.88em;
-  color: #fcd34d;
+  color: var(--c-amber);
 }
 .md-message pre {
   position: relative;
   background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid rgba(56,163,165,0.18);
   border-radius: 8px;
   margin: 0.6em 0;
   padding: 10px 12px;
@@ -145,37 +170,37 @@ button:focus-visible, input:focus-visible, textarea:focus-visible {
   padding: 2px 8px;
   font-size: 10px;
   color: #d1d5db;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(56,163,165,0.18);
+  border: 1px solid rgba(56,163,165,0.25);
   border-radius: 4px;
   cursor: pointer;
   opacity: 0;
   transition: opacity 120ms;
 }
 .md-message pre:hover .copy-btn { opacity: 1; }
-.md-message pre .copy-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.md-message pre .copy-btn:hover { background: rgba(87,204,153,0.3); color: #fff; }
 .md-message blockquote {
-  border-left: 3px solid rgba(99,102,241,0.5);
+  border-left: 3px solid var(--c-teal);
   padding-left: 10px;
   color: #d1d5db;
   margin: 0.5em 0;
 }
 .md-message table { border-collapse: collapse; margin: 0.5em 0; }
-.md-message th, .md-message td { border: 1px solid rgba(255,255,255,0.08); padding: 4px 8px; }
-.md-message hr { border: 0; border-top: 1px solid rgba(255,255,255,0.06); margin: 0.8em 0; }
+.md-message th, .md-message td { border: 1px solid rgba(56,163,165,0.18); padding: 4px 8px; }
+.md-message hr { border: 0; border-top: 1px solid rgba(56,163,165,0.12); margin: 0.8em 0; }
 
-/* highlight.js GitHub Dark inline (zamiast importu CSS) */
+/* highlight.js inline (paleta-friendly) */
 .hljs-keyword,.hljs-selector-tag,.hljs-built_in { color: #ff7b72; }
-.hljs-string,.hljs-attr { color: #a5d6ff; }
-.hljs-number,.hljs-literal { color: #79c0ff; }
-.hljs-comment,.hljs-meta { color: #8b949e; font-style: italic; }
-.hljs-title,.hljs-function .hljs-title { color: #d2a8ff; }
-.hljs-variable,.hljs-name { color: #ffa657; }
-.hljs-type,.hljs-class { color: #f0883e; }
-.hljs-tag { color: #7ee787; }
-.hljs-symbol { color: #ffa657; }
+.hljs-string,.hljs-attr { color: var(--c-mint); }
+.hljs-number,.hljs-literal { color: var(--c-amber); }
+.hljs-comment,.hljs-meta { color: #6b8a8e; font-style: italic; }
+.hljs-title,.hljs-function .hljs-title { color: var(--c-glow); }
+.hljs-variable,.hljs-name { color: var(--c-warn); }
+.hljs-type,.hljs-class { color: var(--c-warn-d); }
+.hljs-tag { color: var(--c-green); }
+.hljs-symbol { color: var(--c-warn); }
 
-/* === Toast notifications === */
+/* === Toasts === */
 .toast-stack {
   position: fixed;
   bottom: 24px;
@@ -192,17 +217,17 @@ button:focus-visible, input:focus-visible, textarea:focus-visible {
   max-width: 360px;
   padding: 10px 14px;
   border-radius: 10px;
-  background: rgba(20,20,24,0.95);
+  background: rgba(13,24,32,0.95);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  border: 1px solid rgba(56,163,165,0.25);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
   font-size: 12px;
   color: #f3f4f6;
   animation: toast-in 180ms ease;
 }
-.toast.success { border-color: rgba(16,185,129,0.4); }
-.toast.error { border-color: rgba(239,68,68,0.4); }
-.toast.info { border-color: rgba(99,102,241,0.4); }
+.toast.success { border-color: rgba(87,204,153,0.6); }
+.toast.error { border-color: rgba(244,140,6,0.6); }
+.toast.info { border-color: rgba(56,163,165,0.6); }
 @keyframes toast-in {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -222,8 +247,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible {
   height: fit-content;
   max-height: 60vh;
   display: flex; flex-direction: column;
-  background: rgba(18,18,22,0.95);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(13,24,32,0.96);
+  border: 1px solid rgba(56,163,165,0.3);
   border-radius: 12px;
   box-shadow: 0 24px 60px rgba(0,0,0,0.6);
   overflow: hidden;
@@ -235,9 +260,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible {
   padding: 14px 18px;
   color: #f3f4f6;
   font-size: 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(56,163,165,0.18);
 }
-.cmdk-list { overflow-y: auto; padding: 6px; }
+.cmdk-list { overflow-y: auto; padding: 6px; scrollbar-width: thin; }
 .cmdk-item {
   display: flex; align-items: center; gap: 10px;
   padding: 8px 12px;
@@ -246,8 +271,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible {
   color: #e5e7eb;
   cursor: pointer;
 }
-.cmdk-item.active { background: rgba(99,102,241,0.2); color: #fff; }
-.cmdk-item-kind { font-size: 10px; color: #6b7280; margin-left: auto; }
+.cmdk-item.active { background: rgba(56,163,165,0.25); color: #fff; }
+.cmdk-item-kind { font-size: 10px; color: rgba(199,249,204,0.5); margin-left: auto; }
 
 /* === Status bar === */
 .status-bar {
@@ -256,12 +281,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible {
   height: 22px;
   flex-shrink: 0;
   padding: 0 12px;
-  background: #0a0a0c;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  background: var(--bg-0);
+  border-top: 1px solid rgba(56,163,165,0.15);
   font-size: 10.5px;
-  color: #9ca3af;
+  color: #9ec5c6;
 }
-.status-bar .sep { color: #4b5563; }
+.status-bar .sep { color: #3a5a5e; }
 
 /* === Mention autocomplete === */
 .mention-popup {
@@ -269,9 +294,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible {
   bottom: 100%;
   left: 0;
   margin-bottom: 6px;
-  background: rgba(18,18,22,0.98);
+  background: rgba(13,24,32,0.98);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(56,163,165,0.3);
   border-radius: 10px;
   box-shadow: 0 12px 30px rgba(0,0,0,0.5);
   max-height: 220px;
@@ -281,40 +306,38 @@ button:focus-visible, input:focus-visible, textarea:focus-visible {
   z-index: 20;
 }
 .mention-popup::-webkit-scrollbar { width: 6px; }
-.mention-popup::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 4px; }
+.mention-popup::-webkit-scrollbar-thumb { background: rgba(56,163,165,0.5); border-radius: 4px; }
 .mention-item {
   padding: 6px 12px;
   font-size: 12px;
   color: #e5e7eb;
   cursor: pointer;
 }
-.mention-item.active { background: rgba(99,102,241,0.2); }
-.mention-item-path { font-size: 10px; color: #6b7280; }
+.mention-item.active { background: rgba(56,163,165,0.25); }
+.mention-item-path { font-size: 10px; color: #7b9a9d; }
 
-/* === Right panel polish === */
-/* Sticky shadow above input area in AI chat */
+/* === Sticky right-panel polish (BEZ przesadnego shadow) === */
+/* v2.8.0 miało `box-shadow: 0 -8px 16px -8px` które wizualnie zachodziło na messages
+   i sprawiało wrażenie ucinania UI. Zostawiamy delikatną linię + brak min-height. */
 .chat-input-area {
-  box-shadow: 0 -8px 16px -8px rgba(0,0,0,0.5), 0 -1px 0 rgba(255,255,255,0.06);
+  box-shadow: 0 -1px 0 rgba(56,163,165,0.15);
   position: relative;
   z-index: 10;
+  background: var(--bg-0);
 }
-/* Model bar always pinned at top of right panel */
 .chat-model-bar {
-  box-shadow: 0 4px 12px -8px rgba(0,0,0,0.4);
+  box-shadow: 0 1px 0 rgba(56,163,165,0.15);
   position: relative;
   z-index: 5;
+  background: var(--bg-0);
 }
 
 /* Horizontal splitter (row resize) */
-.splitter[style*="row-resize"] {
-  cursor: row-resize;
-}
+.splitter[style*="row-resize"] { cursor: row-resize; }
 .splitter[style*="row-resize"]::after {
   top: 50%; left: 0; right: 0; bottom: auto;
   width: auto; height: 1px;
   transform: translateY(-50%);
 }
 .splitter[style*="row-resize"]:hover::after,
-.splitter[style*="row-resize"].active::after {
-  height: 2px;
-}
+.splitter[style*="row-resize"].active::after { height: 2px; }

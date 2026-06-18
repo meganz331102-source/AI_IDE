@@ -12,7 +12,7 @@ export function StatusBar() {
   return (
     <div className="status-bar">
       <span className="inline-flex items-center gap-1.5">
-        <span className={`h-1.5 w-1.5 rounded-full ${isSending ? 'animate-pulse bg-amber-500' : 'bg-emerald-500'}`} />
+        <span className={`h-1.5 w-1.5 rounded-full ${isSending ? 'animate-pulse bg-[#faa307]' : 'bg-[#57cc99]'}`} />
         {isSending ? 'AI pracuje...' : 'Gotowe'}
       </span>
       <span className="sep">·</span>

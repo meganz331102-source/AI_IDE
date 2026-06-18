@@ -32,7 +32,7 @@ export function DiffViewer({ change, onAccept, onReject }: DiffViewerProps) {
           </button>
           <button
             onClick={() => onAccept(change)}
-            className="rounded bg-emerald-700 px-3 py-1 text-xs text-white hover:bg-emerald-600"
+            className="rounded bg-emerald-700 px-3 py-1 text-xs text-white hover:bg-[#38a3a5]"
           >
             Zaakceptuj
           </button>

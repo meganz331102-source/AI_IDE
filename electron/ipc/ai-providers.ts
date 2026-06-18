@@ -44,19 +44,54 @@ async function sendPollinations(model: string, messages: Message[], signal?: Abo
   };
   const pollModel = modelMap[model] || 'openai';
 
-  const res = await pfetch('https://text.pollinations.ai/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'User-Agent': UA },
-    body: JSON.stringify({ model: pollModel, messages, stream: false }),
-    signal,
-  });
+  // Pollinations bywa flaky – timeout 60s + 1 retry przy 5xx/sieciowych.
+  const tryOnce = async (): Promise<Response> => {
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort('timeout'), 60_000);
+    if (signal) signal.addEventListener('abort', () => ac.abort('user-cancel'), { once: true });
+    try {
+      return await pfetch('https://text.pollinations.ai/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'User-Agent': UA },
+        body: JSON.stringify({ model: pollModel, messages, stream: false }),
+        signal: ac.signal,
+      }) as any;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
+  let res: Response;
+  try {
+    res = await tryOnce();
+    if (!res.ok && res.status >= 500) {
+      // Jeden retry po krótkiej pauzie
+      await new Promise((r) => setTimeout(r, 1200));
+      res = await tryOnce();
+    }
+  } catch (e: any) {
+    if (signal?.aborted) throw e;
+    // Sieciowy błąd / timeout – jeden retry
+    await new Promise((r) => setTimeout(r, 1200));
+    res = await tryOnce();
+  }
+
   if (!res.ok) {
     const txt = await res.text().catch(() => '');
-    throw new Error(`Pollinations HTTP ${res.status}: ${txt.slice(0, 200)}`);
+    const err: any = new Error(`Pollinations HTTP ${res.status}: ${txt.slice(0, 200) || 'serwer nie odpowiedział'}`);
+    err.code = res.status === 429 ? 'RATE_LIMIT' : 'PROVIDER_DOWN';
+    err.provider = 'pollinations';
+    err.suggestion = 'Spróbuj zmienić model na Groq (wymaga darmowego klucza) lub Ollamę (lokalnie) w pasku modeli.';
+    throw err;
   }
   const data = await res.json() as any;
   const content = data?.choices?.[0]?.message?.content;
-  if (!content) throw new Error('Pollinations: pusta odpowiedź');
+  if (!content) {
+    const err: any = new Error('Pollinations: pusta odpowiedź serwera.');
+    err.code = 'EMPTY_RESPONSE';
+    err.provider = 'pollinations';
+    throw err;
+  }
   return content;
 }
 

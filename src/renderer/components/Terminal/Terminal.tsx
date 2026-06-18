@@ -77,17 +77,17 @@ export function Terminal() {
 
   if (!rootPath) {
     return (
-      <div className="flex h-full items-center justify-center bg-[#0a0a0c] text-[12px] text-neutral-500">
+      <div className="flex h-full items-center justify-center bg-[#0a1216] text-[12px] text-neutral-500">
         Otwórz projekt, by używać terminala
       </div>
     );
   }
 
   return (
-    <div className="flex h-full flex-col bg-[#0a0a0c]">
+    <div className="flex h-full flex-col bg-[#0a1216]">
       <div className="flex shrink-0 items-center justify-between border-b border-white/[0.06] px-3 py-1.5">
         <div className="flex items-center gap-2 text-[10.5px] text-neutral-500">
-          <span className={`h-1.5 w-1.5 rounded-full ${running ? 'animate-pulse bg-amber-500' : 'bg-emerald-500'}`} />
+          <span className={`h-1.5 w-1.5 rounded-full ${running ? 'animate-pulse bg-[#faa307]' : 'bg-[#57cc99]'}`} />
           <span className="font-mono">{rootPath.split('/').slice(-2).join('/')}</span>
           <span className="text-neutral-700">·</span>
           <span>{running ? 'wykonuję...' : 'gotowy'}</span>
@@ -112,7 +112,7 @@ export function Terminal() {
           <span
             key={i}
             className={
-              chunk.kind === 'cmd' ? 'text-indigo-300' :
+              chunk.kind === 'cmd' ? 'text-[#80ed99]' :
               chunk.kind === 'stderr' ? 'text-red-300' :
               chunk.kind === 'system' ? 'text-neutral-500 italic' :
               'text-neutral-200'
@@ -125,7 +125,7 @@ export function Terminal() {
       </div>
 
       <div className="flex shrink-0 items-center gap-2 border-t border-white/[0.06] px-3 py-2">
-        <span className="font-mono text-[12px] text-emerald-400">$</span>
+        <span className="font-mono text-[12px] text-[#57cc99]">$</span>
         <input
           ref={inputRef}
           value={input}

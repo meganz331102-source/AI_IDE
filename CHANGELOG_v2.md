@@ -1,3 +1,25 @@
+# AI IDE v2.9.0 — zmiany
+
+## Nowe
+- **Nowa paleta kolorów** w całej aplikacji: teal (`#22577a`, `#38a3a5`) → green (`#57cc99`, `#80ed99`, `#c7f9cc`) jako podstawa interfejsu, plus orange (`#f48c06`, `#faa307`, `#ffba08`) dla ostrzeżeń. Tło zmienione z neutralnej czerni na ciepło-teal `#0a1216`. Wszystkie scrollbary, splittery, przyciski, ringi focusu, hover-stany i akcent-aktywne dostały kolory z palety.
+- **Tryb "⫶ Split" w panelu środkowym** — kod i podgląd strony obok siebie, draggable splitter, proporcje zapisywane w localStorage (20–80%). Trzecia zakładka oprócz "📝 Kod" i "👁 Podgląd".
+- **Live Preview** w trybie Split: gdy edytowany plik to `.html` z projektu, iframe automatycznie nawiguje do tego pliku. Po każdym zapisie (`⌘S` w edytorze, accept AI change, auto-apply) iframe sam się odświeża po 120 ms. Badge "● LIVE" w toolbarze podglądu.
+- **Scrollbar w lewej kolumnie** (drzewo plików) — jawnie cienki, w palecie teal/green, plus `scrollbar-thin`. Kolumna ma teraz prawidłowe `min-h-0` i `shrink-0` na nagłówku/footerze.
+
+## Naprawione
+- **Czat nie działał** (regresja po v2.8.0). Pollinations bywa flaky → dodany timeout 60 s + automatyczny 1× retry przy 5xx/błędach sieciowych. Pusta odpowiedź i błędy providera teraz typowane (`PROVIDER_DOWN`, `RATE_LIMIT`, `EMPTY_RESPONSE`) z sugestią zmiany providera na Groq/Ollamę w UI.
+- **UI nieprawidłowo skalowane** — usunąłem agresywny `min-height: 96 px` i `box-shadow: 0 -8px 16px -8px` z `.chat-input-area` które w v2.8.0 powodowały wizualne ucinanie treści. Textarea czatu skrócona z 3 do 2 wierszy. Przyciski akcji (🗑/🌐/⚡) zmniejszone z 32×32 px do 28×28 px. Padding inputu zredukowany.
+- **Skrót ⌘S/Ctrl+S** w edytorze kodu — wcześniej nie istniał, teraz zapisuje aktywny plik.
+
+## Pomniejsze
+- `MiddlePanel` zapamiętuje aktywną zakładkę (`localStorage`).
+- Nowy `tailwind.config.js` z paletą jako theme.extend.colors (brand.*, warn.*, bg.*).
+- Splittery mają glow przy hover (`box-shadow rgba(56,163,165,0.6)`).
+- `FileExplorer` pokazuje informację gdy projekt nie ma plików lub wyszukiwarka nic nie znalazła.
+- Ikona projektu w "Otwórz projekt" dostała emoji 📁 i `truncate` na długich ścieżkach.
+
+---
+
 # AI IDE v2.8.0 — zmiany
 
 ## Nowe

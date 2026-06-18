@@ -72,21 +72,21 @@ export function UpdatesTab() {
           <button
             onClick={handleCheck}
             disabled={phase === 'checking' || phase === 'downloading'}
-            className="shrink-0 rounded-md bg-indigo-600 px-3 py-1.5 text-[11.5px] font-medium text-white hover:bg-indigo-500 disabled:opacity-40"
+            className="shrink-0 rounded-md bg-[#38a3a5] px-3 py-1.5 text-[11.5px] font-medium text-white hover:bg-[#57cc99] disabled:opacity-40"
           >
             {phase === 'checking' ? 'Sprawdzam...' : 'Sprawdź teraz'}
           </button>
         </div>
 
         {phase === 'not-available' && (
-          <div className="rounded-md bg-emerald-500/10 px-3 py-2 text-[11px] text-emerald-300 ring-1 ring-emerald-500/30">
+          <div className="rounded-md bg-[#57cc99]/10 px-3 py-2 text-[11px] text-[#80ed99] ring-1 ring-[#57cc99]/40">
             ✓ Masz najnowszą wersję.
           </div>
         )}
 
         {phase === 'available' && newVersion && (
-          <div className="space-y-2 rounded-md bg-indigo-500/10 p-3 ring-1 ring-indigo-500/30">
-            <div className="text-[12px] text-indigo-200">
+          <div className="space-y-2 rounded-md bg-[#57cc99]/10 p-3 ring-1 ring-[#38a3a5]/40">
+            <div className="text-[12px] text-[#c7f9cc]">
               Dostępna nowa wersja: <span className="font-medium">v{newVersion}</span>
             </div>
             {releaseNotes && (
@@ -96,7 +96,7 @@ export function UpdatesTab() {
             )}
             <button
               onClick={handleDownload}
-              className="w-full rounded-md bg-indigo-600 px-3 py-1.5 text-[11.5px] font-medium text-white hover:bg-indigo-500"
+              className="w-full rounded-md bg-[#38a3a5] px-3 py-1.5 text-[11.5px] font-medium text-white hover:bg-[#57cc99]"
             >
               Pobierz aktualizację
             </button>
@@ -104,28 +104,28 @@ export function UpdatesTab() {
         )}
 
         {phase === 'downloading' && progress && (
-          <div className="space-y-2 rounded-md bg-amber-500/10 p-3 ring-1 ring-amber-500/30">
-            <div className="flex items-center justify-between text-[11px] text-amber-200">
+          <div className="space-y-2 rounded-md bg-[#faa307]/10 p-3 ring-1 ring-[#faa307]/40">
+            <div className="flex items-center justify-between text-[11px] text-[#ffba08]">
               <span>Pobieram v{newVersion}...</span>
               <span className="font-mono">{progress.percent}%</span>
             </div>
             <div className="h-1.5 overflow-hidden rounded-full bg-black/30">
-              <div className="h-full bg-amber-500 transition-all" style={{ width: `${progress.percent}%` }} />
+              <div className="h-full bg-[#faa307] transition-all" style={{ width: `${progress.percent}%` }} />
             </div>
-            <div className="text-[10px] text-amber-300/70">
+            <div className="text-[10px] text-[#ffba08]/70">
               {fmtMB(progress.transferred)} / {fmtMB(progress.total)} · {fmtMB(progress.bps)}/s
             </div>
           </div>
         )}
 
         {phase === 'downloaded' && (
-          <div className="space-y-2 rounded-md bg-emerald-500/10 p-3 ring-1 ring-emerald-500/30">
-            <div className="text-[12px] text-emerald-200">
+          <div className="space-y-2 rounded-md bg-[#57cc99]/10 p-3 ring-1 ring-[#57cc99]/40">
+            <div className="text-[12px] text-[#c7f9cc]">
               ✓ Pobrano v{newVersion}. Kliknij aby zainstalować i uruchomić aplikację ponownie.
             </div>
             <button
               onClick={handleInstall}
-              className="w-full rounded-md bg-emerald-600 px-3 py-1.5 text-[11.5px] font-medium text-white hover:bg-emerald-500"
+              className="w-full rounded-md bg-[#38a3a5] px-3 py-1.5 text-[11.5px] font-medium text-white hover:bg-[#57cc99]"
             >
               Zainstaluj i uruchom ponownie
             </button>
@@ -144,7 +144,7 @@ export function UpdatesTab() {
           <button
             type="button"
             onClick={() => setAutoUpdate(!autoUpdate)}
-            className={`mt-0.5 h-4 w-7 shrink-0 rounded-full transition ${autoUpdate ? 'bg-indigo-600' : 'bg-white/[0.08]'}`}
+            className={`mt-0.5 h-4 w-7 shrink-0 rounded-full transition ${autoUpdate ? 'bg-[#38a3a5]' : 'bg-white/[0.08]'}`}
           >
             <span className={`block h-3 w-3 rounded-full bg-white shadow-sm transition ${autoUpdate ? 'ml-3' : 'ml-0.5'}`} />
           </button>

@@ -16,8 +16,16 @@ interface DevServerStatus {
   framework?: string;
 }
 
-export function PreviewPanel() {
+interface PreviewPanelProps {
+  /** Tryb Split: synchronizuj iframe z aktualnie edytowanym plikiem +
+   *  auto-reload po każdym zapisie (fileSaveCounter z projectStore). */
+  liveEditMode?: boolean;
+}
+
+export function PreviewPanel({ liveEditMode = false }: PreviewPanelProps) {
   const rootPath = useProjectStore((s) => s.rootPath);
+  const activeFilePath = useProjectStore((s) => s.activeFilePath);
+  const fileSaveCounter = useProjectStore((s) => s.fileSaveCounter);
   const setPrefill = useDraftStore((s) => s.setPrefill);
 
   const [baseUrl, setBaseUrl] = useState<string | null>(null);
@@ -110,6 +118,31 @@ export function PreviewPanel() {
       }
     })().catch((e) => setError(String(e?.message || e)));
   }, [rootPath]);
+
+  // === LIVE EDIT MODE === (tryb Split: kod ⟷ podgląd)
+  // 1) Gdy edytowany jest plik .html w obrębie projektu → nawiguj iframe do tego pliku.
+  // 2) Po każdym zapisie pliku (fileSaveCounter ↑) → reload iframe.
+  useEffect(() => {
+    if (!liveEditMode || !rootPath || !activeFilePath || !baseUrl || isExternal) return;
+    // Tylko HTML powoduje zmianę URL. CSS/JS – zachowujemy aktualny URL, reload zrobi efekt.
+    if (!/\.html?$/i.test(activeFilePath)) return;
+    if (!activeFilePath.startsWith(rootPath)) return;
+    const rel = activeFilePath.slice(rootPath.length).replace(/^\//, '');
+    const full = baseUrl.replace(/\/$/, '') + '/' + rel;
+    if (full !== url) {
+      setUrl(full);
+      setAddressInput('/' + rel);
+      lastUrlByRoot.current.set(rootPath, full);
+    }
+  }, [liveEditMode, activeFilePath, baseUrl, rootPath, isExternal, url]);
+
+  // Auto-reload iframe po zapisie pliku (CodeEditor / auto-apply AI).
+  // Mały debounce żeby uniknąć dwóch reloadów jednocześnie.
+  useEffect(() => {
+    if (!liveEditMode || fileSaveCounter === 0) return;
+    const t = setTimeout(() => setReloadKey((k) => k + 1), 120);
+    return () => clearTimeout(t);
+  }, [liveEditMode, fileSaveCounter]);
 
   // Subskrypcje dev server eventów
   useEffect(() => {
@@ -223,7 +256,7 @@ export function PreviewPanel() {
 
   if (!rootPath) {
     return (
-      <div className="flex h-full flex-col items-center justify-center bg-[#0c0c10] text-neutral-600">
+      <div className="flex h-full flex-col items-center justify-center bg-[#0a1216] text-neutral-600">
         <div className="mb-2 text-3xl text-neutral-700">⬚</div>
         <div className="text-[12px]">Otwórz projekt, by zobaczyć podgląd</div>
       </div>
@@ -231,16 +264,25 @@ export function PreviewPanel() {
   }
 
   return (
-    <div className="flex h-full flex-col bg-[#0c0c10]">
+    <div className="flex h-full flex-col bg-[#0a1216]">
       {/* Toolbar */}
-      <div className="flex shrink-0 items-center gap-1.5 border-b border-white/[0.06] px-3 py-2">
+      <div className="flex shrink-0 items-center gap-1.5 border-b border-[#22577a]/25 px-3 py-2">
+        {liveEditMode && (
+          <span
+            title="Live Preview – iframe sam się odświeży po każdym zapisie pliku (⌘S)"
+            className="inline-flex shrink-0 items-center gap-1 rounded-md bg-[#57cc99]/20 px-2 py-0.5 text-[10px] font-medium text-[#c7f9cc] ring-1 ring-[#57cc99]/40"
+          >
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#80ed99] shadow-[0_0_6px_rgba(128,237,153,0.8)]" />
+            LIVE
+          </span>
+        )}
         <button
           onClick={togglePicker}
           disabled={isExternal || !url}
           title={isExternal ? 'Picker tylko dla statycznego podglądu (cross-origin nie pozwala)' : 'Kliknij element na stronie'}
           className={`rounded-md px-2.5 py-1 text-[11px] font-medium transition ${
             picking
-              ? 'bg-indigo-600 text-white shadow-sm'
+              ? 'bg-[#38a3a5] text-white shadow-sm'
               : 'bg-white/[0.04] text-neutral-200 ring-1 ring-white/[0.06] hover:bg-white/[0.07]'
           } disabled:opacity-40`}
         >
@@ -252,25 +294,25 @@ export function PreviewPanel() {
           onChange={(e) => setAddressInput(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') navigateTo(addressInput); }}
           placeholder="/ albo http://localhost:3000"
-          className="flex-1 rounded-md bg-white/[0.04] px-2.5 py-1 font-mono text-[11px] text-neutral-200 ring-1 ring-white/[0.06] placeholder-neutral-600 outline-none focus:bg-white/[0.06] focus:ring-indigo-500/40"
+          className="flex-1 rounded-md bg-white/[0.04] px-2.5 py-1 font-mono text-[11px] text-neutral-200 ring-1 ring-white/[0.06] placeholder-neutral-600 outline-none focus:bg-white/[0.06] focus:ring-[#38a3a5]/50"
         />
         <button
           onClick={() => navigateTo(addressInput)}
-          className="rounded-md bg-indigo-600/90 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-indigo-500"
+          className="rounded-md bg-[#38a3a5]/90 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-[#57cc99]"
         >Idź</button>
       </div>
 
       {/* Dev server pasek */}
       {(detectedFramework || devStatus.running || devStarting) && (
-        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-white/[0.06] bg-emerald-500/[0.04] px-3 py-1.5">
+        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-white/[0.06] bg-[#57cc99]/[0.04] px-3 py-1.5">
           <div className="flex min-w-0 items-center gap-2 text-[10.5px]">
-            <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${devStatus.running ? 'bg-emerald-500' : devStarting ? 'animate-pulse bg-amber-500' : 'bg-neutral-600'}`} />
+            <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${devStatus.running ? 'bg-[#57cc99]' : devStarting ? 'animate-pulse bg-[#faa307]' : 'bg-neutral-600'}`} />
             <span className="text-neutral-300">
               {devStatus.running && devStatus.url
-                ? <>Dev server: <span className="font-mono text-emerald-300">{devStatus.url}</span> ({devStatus.framework})</>
+                ? <>Dev server: <span className="font-mono text-[#80ed99]">{devStatus.url}</span> ({devStatus.framework})</>
                 : devStarting
                 ? <>{depsInstalled ? `Uruchamiam ${detectedFramework}...` : `Instaluję zależności (npm install) + uruchamiam ${detectedFramework}...`} (30-90s)</>
-                : <>Wykryto {detectedFramework}{!depsInstalled && <span className="text-amber-300"> · brak node_modules</span>}. Kliknij ▶ żeby {depsInstalled ? 'uruchomić' : 'zainstalować i uruchomić'}.</>}
+                : <>Wykryto {detectedFramework}{!depsInstalled && <span className="text-[#ffba08]"> · brak node_modules</span>}. Kliknij ▶ żeby {depsInstalled ? 'uruchomić' : 'zainstalować i uruchomić'}.</>}
             </span>
           </div>
           <div className="flex shrink-0 items-center gap-1">
@@ -285,7 +327,7 @@ export function PreviewPanel() {
                 Stop
               </button>
             ) : (
-              <button onClick={startDev} disabled={devStarting} className="rounded-md bg-indigo-600 px-2 py-0.5 text-[10px] font-medium text-white hover:bg-indigo-500 disabled:opacity-40">
+              <button onClick={startDev} disabled={devStarting} className="rounded-md bg-[#38a3a5] px-2 py-0.5 text-[10px] font-medium text-white hover:bg-[#57cc99] disabled:opacity-40">
                 {devStarting ? 'Startuję...' : '▶ Uruchom'}
               </button>
             )}
@@ -302,13 +344,13 @@ export function PreviewPanel() {
 
       {/* Zaznaczony element */}
       {picked && (
-        <div className="shrink-0 border-b border-white/[0.06] bg-indigo-500/[0.06] px-3 py-2">
+        <div className="shrink-0 border-b border-white/[0.06] bg-[#57cc99]/[0.06] px-3 py-2">
           <div className="mb-1 flex items-center justify-between">
-            <span className="text-[10.5px] text-indigo-300">Zaznaczono: <span className="font-mono text-indigo-200">{picked.selector}</span></span>
+            <span className="text-[10.5px] text-[#80ed99]">Zaznaczono: <span className="font-mono text-[#c7f9cc]">{picked.selector}</span></span>
             <button onClick={() => setPicked(null)} className="rounded-md px-1.5 py-0.5 text-[10px] text-neutral-500 hover:bg-white/[0.06] hover:text-neutral-200">Anuluj</button>
           </div>
           {picked.text && <div className="mb-1.5 truncate text-[10.5px] text-neutral-500">„{picked.text}"</div>}
-          <button onClick={sendToChat} className="w-full rounded-md bg-indigo-600 px-3 py-1.5 text-[11px] font-medium text-white hover:bg-indigo-500">
+          <button onClick={sendToChat} className="w-full rounded-md bg-[#38a3a5] px-3 py-1.5 text-[11px] font-medium text-white hover:bg-[#57cc99]">
             Wyślij do AI → opisz zmianę w czacie
           </button>
         </div>
@@ -317,11 +359,11 @@ export function PreviewPanel() {
       {/* Główna treść */}
       <div className="relative flex-1 min-h-0 bg-white">
         {error ? (
-          <div className="flex h-full items-center justify-center bg-[#0c0c10] p-4 text-center text-[12px] text-red-400">
+          <div className="flex h-full items-center justify-center bg-[#0a1216] p-4 text-center text-[12px] text-red-400">
             Błąd: {error}
           </div>
         ) : needsPick ? (
-          <div className="flex h-full flex-col items-center justify-start overflow-y-auto scrollbar-thin bg-[#0c0c10] p-6">
+          <div className="flex h-full flex-col items-center justify-start overflow-y-auto scrollbar-thin bg-[#0a1216] p-6">
             <div className="mb-3 text-3xl text-neutral-700">▣</div>
             <div className="mb-1 text-center text-[12px] text-neutral-300">Nie znalazłem index.html w typowych miejscach</div>
             <div className="mb-4 max-w-md text-center text-[10.5px] text-neutral-500">
@@ -331,13 +373,13 @@ export function PreviewPanel() {
               <button
                 onClick={startDev}
                 disabled={devStarting}
-                className="mb-4 rounded-md bg-indigo-600 px-4 py-2 text-[12px] font-medium text-white hover:bg-indigo-500 disabled:opacity-40"
+                className="mb-4 rounded-md bg-[#38a3a5] px-4 py-2 text-[12px] font-medium text-white hover:bg-[#57cc99] disabled:opacity-40"
               >
                 ▶ Uruchom dev server ({detectedFramework})
               </button>
             )}
             {htmlFiles.length === 0 ? (
-              <div className="rounded-md bg-amber-500/10 px-3 py-2 text-center text-[11px] text-amber-200 ring-1 ring-amber-500/30">
+              <div className="rounded-md bg-[#faa307]/10 px-3 py-2 text-center text-[11px] text-[#ffba08] ring-1 ring-[#faa307]/40">
                 <div className="mb-1 font-medium">Brak plików .html w projekcie.</div>
                 <div className="text-[10px] opacity-80">
                   {detectedFramework
@@ -368,7 +410,7 @@ export function PreviewPanel() {
             title="Podgląd"
           />
         ) : (
-          <div className="flex h-full items-center justify-center bg-[#0c0c10] text-[12px] text-neutral-500">Ładuję podgląd...</div>
+          <div className="flex h-full items-center justify-center bg-[#0a1216] text-[12px] text-neutral-500">Ładuję podgląd...</div>
         )}
       </div>
     </div>

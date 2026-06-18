@@ -47,6 +47,7 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
 
   const selectedFilePaths = useProjectStore((s) => s.selectedFilePaths);
   const toggleFileSelection = useProjectStore((s) => s.toggleFileSelection);
+  const bumpFileSaveCounter = useProjectStore((s) => s.bumpFileSaveCounter);
   const fileTree = useProjectStore((s) => s.fileTree);
 
   const showFullPrompt = useSettingsStore((s) => s.showFullPrompt);
@@ -194,6 +195,7 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
                 await window.aiIDE.fs.deleteFile(change.filePath);
               }
             }
+            bumpFileSaveCounter();
             toast.success(`Auto-zastosowano ${changes.length} ${changes.length === 1 ? 'zmianę' : 'zmiany'}`);
           } else {
             setPendingChanges(changes);
@@ -254,6 +256,7 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
       toast.info(`Usunięto ${change.filePath.split('/').pop()}`);
     }
     setPendingChanges((prev) => prev.filter((c) => c.id !== change.id));
+    bumpFileSaveCounter();
   };
 
   const handleRejectChange = (change: ProposedChange) => {
@@ -292,7 +295,7 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
 
   return (
     <div
-      className="grid h-full min-h-0 bg-[#0c0c10]"
+      className="grid h-full min-h-0 bg-[#0a1216]"
       style={{ gridTemplateRows: 'auto auto minmax(0, 1fr) auto' }}
     >
       {challenge && (
@@ -310,7 +313,7 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
         />
       )}
 
-      <div className="chat-model-bar flex shrink-0 items-center gap-2 border-b border-white/[0.06] bg-[#0c0c10] p-2">
+      <div className="chat-model-bar flex shrink-0 items-center gap-2 border-b border-white/[0.06] bg-[#0a1216] p-2">
         <div className="flex-1 min-w-0 overflow-x-auto scrollbar-thin">
           <div className="flex w-max gap-0.5 rounded-lg bg-white/[0.03] p-0.5">
             {Object.values(AI_MODELS).map((model) => (
@@ -319,7 +322,7 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
                 onClick={() => handleModelSwitch(model.id)}
                 className={`whitespace-nowrap rounded-md px-2.5 py-1 text-[11px] font-medium transition ${
                   activeModel === model.id
-                    ? 'bg-indigo-600 text-white shadow-sm'
+                    ? 'bg-[#38a3a5] text-white shadow-sm'
                     : 'text-neutral-400 hover:bg-white/[0.05] hover:text-neutral-200'
                 }`}
               >
@@ -340,12 +343,12 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
       <div className="shrink-0 border-b border-white/[0.06] px-3 py-2 text-[11px] text-neutral-500">
         <div className="flex items-center justify-between">
           <span className="inline-flex items-center gap-1.5">
-            <span className={`h-1.5 w-1.5 rounded-full ${selectedFilePaths.size > 0 ? 'bg-emerald-500' : 'bg-neutral-700'}`} />
+            <span className={`h-1.5 w-1.5 rounded-full ${selectedFilePaths.size > 0 ? 'bg-[#57cc99]' : 'bg-neutral-700'}`} />
             {selectedFilePaths.size} {selectedFilePaths.size === 1 ? 'plik' : 'plików'} w kontekście
             {tokenEstimate > 0 && <span className="ml-2 text-neutral-600">~{tokenEstimate} tok.</span>}
           </span>
           <div className="flex items-center gap-2">
-            {autoApply && <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-[9.5px] text-amber-300">auto-apply</span>}
+            {autoApply && <span className="rounded bg-[#faa307]/15 px-1.5 py-0.5 text-[9.5px] text-[#ffba08]">auto-apply</span>}
             <button
               onClick={() => setShowSnippets((v) => !v)}
               title="Szybkie prompty"
@@ -376,7 +379,7 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
               key={msg.id}
               className={`group relative min-w-0 rounded-xl px-3.5 py-2.5 leading-relaxed shadow-sm ${
                 msg.role === 'user'
-                  ? 'ml-8 bg-indigo-600/15 ring-1 ring-indigo-500/20 text-neutral-100'
+                  ? 'ml-8 bg-[#38a3a5]/15 ring-1 ring-[#38a3a5]/30 text-neutral-100'
                   : msg.role === 'system'
                   ? 'bg-red-950/40 ring-1 ring-red-500/30 text-red-200'
                   : 'mr-8 bg-white/[0.04] ring-1 ring-white/[0.06] text-neutral-100'
@@ -421,9 +424,9 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
         {isSending && (
           <div className="flex items-center gap-2 text-[11px] text-neutral-500">
             <span className="inline-flex gap-1">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-500" style={{ animationDelay: '0ms' }} />
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-500" style={{ animationDelay: '150ms' }} />
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-500" style={{ animationDelay: '300ms' }} />
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57cc99]" style={{ animationDelay: '0ms' }} />
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57cc99]" style={{ animationDelay: '150ms' }} />
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#57cc99]" style={{ animationDelay: '300ms' }} />
             </span>
             AI pisze odpowiedź...
           </div>
@@ -431,13 +434,12 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
       </div>
 
       <div
-        className="chat-input-area relative z-10 border-t border-white/[0.06] bg-[#0c0c10] p-3"
-        style={{ minHeight: 96 }}
+        className="chat-input-area relative z-10 border-t border-white/[0.06] p-2.5"
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
       >
         {showSnippets && (
-          <div className="absolute bottom-full left-3 right-3 mb-2 max-h-56 overflow-y-auto scrollbar-thin rounded-lg bg-[#15151a]/98 backdrop-blur ring-1 ring-white/10 shadow-2xl">
+          <div className="absolute bottom-full left-3 right-3 mb-2 max-h-56 overflow-y-auto scrollbar-thin rounded-lg bg-[#0d1820]/98 backdrop-blur ring-1 ring-white/10 shadow-2xl">
             <div className="border-b border-white/[0.06] px-3 py-1.5 text-[10px] uppercase tracking-wide text-neutral-500">Szybkie prompty</div>
             {snippets.map((s) => (
               <div
@@ -483,22 +485,22 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
                 toast.info('Czat wyczyszczony');
               }}
               title="Wyczyść czat"
-              className="flex h-8 w-8 items-center justify-center rounded-md bg-white/[0.04] text-[13px] text-neutral-400 ring-1 ring-white/[0.06] hover:bg-white/[0.08] hover:text-neutral-200"
+              className="flex h-7 w-7 items-center justify-center rounded-md bg-white/[0.04] text-[12px] text-neutral-400 ring-1 ring-white/[0.06] hover:bg-white/[0.08] hover:text-neutral-200"
             >
               🗑
             </button>
             <button
               onClick={() => onOpenSettings?.()}
               title="Zmień IP (Ustawienia → Prywatność)"
-              className="flex h-8 w-8 items-center justify-center rounded-md bg-white/[0.04] text-[13px] text-neutral-400 ring-1 ring-white/[0.06] hover:bg-white/[0.08] hover:text-neutral-200"
+              className="flex h-7 w-7 items-center justify-center rounded-md bg-white/[0.04] text-[12px] text-neutral-400 ring-1 ring-white/[0.06] hover:bg-white/[0.08] hover:text-neutral-200"
             >
               🌐
             </button>
             <button
               onClick={() => setShowSnippets((v) => !v)}
               title="Gotowe prompty"
-              className={`flex h-8 w-8 items-center justify-center rounded-md ring-1 text-[13px] hover:bg-white/[0.08] hover:text-neutral-200 ${
-                showSnippets ? 'bg-indigo-600 text-white ring-indigo-400/30' : 'bg-white/[0.04] text-neutral-400 ring-white/[0.06]'
+              className={`flex h-7 w-7 items-center justify-center rounded-md ring-1 text-[12px] hover:bg-white/[0.08] hover:text-neutral-200 ${
+                showSnippets ? 'bg-[#38a3a5] text-white ring-[#57cc99]/40' : 'bg-white/[0.04] text-neutral-400 ring-white/[0.06]'
               }`}
             >
               ⚡
@@ -524,14 +526,14 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
                 }
               }}
               placeholder={`Wpisz pytanie. @ — wzmianka pliku${isSending ? ' (AI pracuje, możesz pisać dalej)' : ''}`}
-              className="w-full resize-none rounded-lg bg-white/[0.04] px-3 py-2.5 text-[13px] text-neutral-100 ring-1 ring-white/[0.06] placeholder-neutral-600 outline-none transition focus:bg-white/[0.06] focus:ring-indigo-500/40"
-              rows={3}
+              className="w-full resize-none rounded-lg bg-white/[0.04] px-3 py-2 text-[13px] text-neutral-100 ring-1 ring-white/[0.06] placeholder-neutral-600 outline-none transition focus:bg-white/[0.06] focus:ring-[#38a3a5]/50"
+              rows={2}
             />
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-neutral-600">
                 {isSending ? (
-                  <span className="inline-flex items-center gap-1 text-amber-400">
-                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500" />
+                  <span className="inline-flex items-center gap-1 text-[#faa307]">
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#faa307]" />
                     AI pisze…
                   </span>
                 ) : (
@@ -549,7 +551,7 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
                 <button
                   onClick={handleSend}
                   disabled={!input.trim()}
-                  className="rounded-md bg-indigo-600 px-2.5 py-1 text-[10.5px] font-medium text-white hover:bg-indigo-500 disabled:opacity-40"
+                  className="rounded-md bg-[#38a3a5] px-2.5 py-1 text-[10.5px] font-medium text-white hover:bg-[#57cc99] disabled:opacity-40"
                 >
                   Wyślij ↵
                 </button>

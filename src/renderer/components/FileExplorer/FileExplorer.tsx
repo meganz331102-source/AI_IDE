@@ -59,7 +59,7 @@ function FileNode({ node, depth }: { node: ProjectFile; depth: number }) {
         type="checkbox"
         checked={isSelected}
         onChange={() => toggleFileSelection(node.absolutePath)}
-        className="h-3 w-3 accent-indigo-500"
+        className="h-3 w-3 accent-[#38a3a5]"
         title="Dodaj plik do kontekstu AI"
       />
       <span className="w-3 shrink-0 text-center text-[10px] text-neutral-600">{fileIcon(node.name)}</span>
@@ -82,36 +82,43 @@ export function FileExplorer() {
     : fileTree;
 
   return (
-    <div className="flex h-full flex-col bg-[#0c0c10]">
-      <div className="border-b border-white/[0.06] p-3">
+    <div className="flex h-full min-h-0 flex-col bg-[#0a1216]">
+      <div className="shrink-0 border-b border-[#22577a]/25 p-3">
         <button
           onClick={openProject}
-          className="w-full rounded-lg bg-white/[0.04] px-3 py-1.5 text-[12px] text-neutral-200 ring-1 ring-white/[0.06] transition hover:bg-white/[0.07]"
+          className="w-full truncate rounded-lg bg-[#22577a]/20 px-3 py-1.5 text-[12px] text-[#c7f9cc] ring-1 ring-[#38a3a5]/30 transition hover:bg-[#22577a]/35 hover:ring-[#57cc99]/50"
+          title={rootPath || 'Otwórz projekt'}
         >
-          {rootPath ? rootPath.split('/').pop() : 'Otwórz projekt...'}
+          {rootPath ? '📁 ' + rootPath.split('/').pop() : 'Otwórz projekt...'}
         </button>
       </div>
 
       {rootPath && (
-        <div className="border-b border-white/[0.06] p-2">
+        <div className="shrink-0 border-b border-[#22577a]/25 p-2">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Szukaj plików..."
-            className="w-full rounded-md bg-white/[0.04] px-2.5 py-1.5 text-[12px] text-neutral-200 ring-1 ring-white/[0.06] placeholder-neutral-600 outline-none transition focus:bg-white/[0.06] focus:ring-indigo-500/40"
+            className="w-full rounded-md bg-white/[0.04] px-2.5 py-1.5 text-[12px] text-neutral-200 ring-1 ring-white/[0.06] placeholder-neutral-600 outline-none transition focus:bg-white/[0.06] focus:ring-[#38a3a5]/50"
           />
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto py-2">
+      {/* Drzewo plików – własny scroll (scrollbar-thin w palecie teal) */}
+      <div className="min-h-0 flex-1 overflow-y-auto scrollbar-thin py-2">
+        {filteredTree.length === 0 && rootPath && (
+          <div className="px-4 py-6 text-center text-[11px] text-neutral-600">
+            {search ? 'Brak plików pasujących do wyszukiwania' : 'Brak plików w projekcie'}
+          </div>
+        )}
         {filteredTree.map((node) => (
           <FileNode key={node.absolutePath} node={node} depth={0} />
         ))}
       </div>
 
-      <div className="border-t border-white/[0.06] px-3 py-2 text-[10.5px] text-neutral-500">
+      <div className="shrink-0 border-t border-[#22577a]/25 px-3 py-2 text-[10.5px] text-[#9ec5c6]">
         <span className="inline-flex items-center gap-1.5">
-          <span className={`h-1.5 w-1.5 rounded-full ${selectedFilePaths.size > 0 ? 'bg-emerald-500' : 'bg-neutral-700'}`} />
+          <span className={`h-1.5 w-1.5 rounded-full ${selectedFilePaths.size > 0 ? 'bg-[#57cc99] shadow-[0_0_6px_rgba(128,237,153,0.6)]' : 'bg-neutral-700'}`} />
           {selectedFilePaths.size} {selectedFilePaths.size === 1 ? 'plik' : 'plików'} w kontekście AI
         </span>
       </div>
