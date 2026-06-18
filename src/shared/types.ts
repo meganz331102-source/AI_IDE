@@ -1,6 +1,6 @@
 // Wspólne typy używane w main process (Electron) oraz renderer (React)
 
-export type AIModelId = 'pollinations' | 'pollinations-mistral' | 'pollinations-llama' | 'groq' | 'duckai' | 'chatgpt' | 'gemini' | 'deepseek';
+export type AIModelId = 'pollinations' | 'pollinations-mistral' | 'pollinations-llama' | 'groq' | 'duckai' | 'chatgpt' | 'gemini' | 'deepseek' | 'ollama';
 
 export interface AIModelConfig {
   id: AIModelId;

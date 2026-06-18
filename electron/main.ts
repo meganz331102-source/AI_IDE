@@ -10,6 +10,8 @@ import { registerSearchHandlers } from './ipc/search';
 import { registerPrivacyHandlers } from './ipc/privacy';
 import { registerDevServerHandlers, stop as stopDevServer } from './ipc/dev-server';
 import { registerTerminalHandlers, killAllTerminals } from './ipc/terminal';
+import { registerUpdaterHandlers, setUpdaterWindow } from './ipc/updater';
+import { registerOllamaHandlers } from './ipc/ollama';
 import { stopPreviewServer } from './preview-server';
 
 let mainWindow: BrowserWindow | null = null;
@@ -55,6 +57,8 @@ app.whenReady().then(() => {
   registerPrivacyHandlers(ipcMain);
   registerDevServerHandlers(ipcMain);
   registerTerminalHandlers(ipcMain);
+  registerUpdaterHandlers(ipcMain);
+  registerOllamaHandlers(ipcMain);
 
   // Otwieranie URL w zewnętrznej przeglądarce (np. logowanie GitHub)
   ipcMain.handle('shell:openExternal', async (_e, url: string) => {
@@ -62,6 +66,7 @@ app.whenReady().then(() => {
   });
 
   createMainWindow();
+  if (mainWindow) setUpdaterWindow(mainWindow);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createMainWindow();

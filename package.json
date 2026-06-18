@@ -1,7 +1,7 @@
 {
   "name": "ai-ide",
-  "version": "2.7.1",
-  "description": "Lokalna aplikacja AI IDE dla macOS – wiele modeli AI przez sesje przeglądarki, bez oficjalnych API",
+  "version": "2.8.0",
+  "description": "Lokalna aplikacja AI IDE dla macOS \u2013 wiele modeli AI przez sesje przegl\u0105darki, bez oficjalnych API",
   "main": "dist-electron/electron/main.js",
   "author": "AI IDE",
   "license": "MIT",
@@ -28,7 +28,8 @@
     "playwright": "^1.47.0",
     "simple-git": "^3.27.0",
     "undici": "^6.20.0",
-    "zustand": "^4.5.5"
+    "zustand": "^4.5.5",
+    "electron-updater": "^6.3.9"
   },
   "devDependencies": {
     "@monaco-editor/react": "^4.6.0",
@@ -65,11 +66,22 @@
     "mac": {
       "category": "public.app-category.developer-tools",
       "icon": "build/icon.icns",
-      "target": ["dmg", "zip"],
+      "target": [
+        "dmg",
+        "zip"
+      ],
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "meganz331102-source",
+        "repo": "AI_IDE",
+        "releaseType": "release"
+      }
+    ]
   }
 }

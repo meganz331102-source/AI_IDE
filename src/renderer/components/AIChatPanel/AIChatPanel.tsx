@@ -310,8 +310,8 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
         />
       )}
 
-      <div className="flex shrink-0 items-center gap-2 border-b border-white/[0.06] p-2">
-        <div className="flex-1 min-w-0 overflow-x-auto" style={{ scrollbarWidth: 'thin' }}>
+      <div className="chat-model-bar flex shrink-0 items-center gap-2 border-b border-white/[0.06] bg-[#0c0c10] p-2">
+        <div className="flex-1 min-w-0 overflow-x-auto scrollbar-thin">
           <div className="flex w-max gap-0.5 rounded-lg bg-white/[0.03] p-0.5">
             {Object.values(AI_MODELS).map((model) => (
               <button
@@ -357,7 +357,7 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
         </div>
       </div>
 
-      <div ref={scrollRef} className="min-h-0 space-y-3 overflow-y-auto p-3" style={{ fontSize }}>
+      <div ref={scrollRef} className="min-h-0 space-y-3 overflow-y-auto scrollbar-thin p-3" style={{ fontSize }}>
         {messages.length === 0 && !isSending && (
           <div className="flex h-full flex-col items-center justify-center text-center text-neutral-600">
             <div className="mb-3 text-3xl">✦</div>
@@ -431,13 +431,13 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
       </div>
 
       <div
-        className="relative z-10 border-t border-white/[0.06] bg-[#0c0c10] p-3"
+        className="chat-input-area relative z-10 border-t border-white/[0.06] bg-[#0c0c10] p-3"
         style={{ minHeight: 96 }}
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
       >
         {showSnippets && (
-          <div className="absolute bottom-full left-3 right-3 mb-2 max-h-56 overflow-y-auto rounded-lg bg-[#15151a]/98 backdrop-blur ring-1 ring-white/10 shadow-2xl">
+          <div className="absolute bottom-full left-3 right-3 mb-2 max-h-56 overflow-y-auto scrollbar-thin rounded-lg bg-[#15151a]/98 backdrop-blur ring-1 ring-white/10 shadow-2xl">
             <div className="border-b border-white/[0.06] px-3 py-1.5 text-[10px] uppercase tracking-wide text-neutral-500">Szybkie prompty</div>
             {snippets.map((s) => (
               <div

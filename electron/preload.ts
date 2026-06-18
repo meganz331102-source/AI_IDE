@@ -160,4 +160,36 @@ contextBridge.exposeInMainWorld('aiIDE', {
       return () => ipcRenderer.removeListener('terminal:exit', listener);
     },
   },
+
+  updater: {
+    check: (): Promise<{ ok: boolean; version?: string | null; error?: string }> =>
+      ipcRenderer.invoke('updater:check'),
+    download: (): Promise<{ ok: boolean; error?: string }> =>
+      ipcRenderer.invoke('updater:download'),
+    install: (): Promise<void> => ipcRenderer.invoke('updater:install'),
+    getCurrentVersion: (): Promise<string | null> =>
+      ipcRenderer.invoke('updater:getCurrentVersion'),
+    on: (event: 'checking' | 'available' | 'not-available' | 'error' | 'progress' | 'downloaded', cb: (payload: any) => void) => {
+      const listener = (_e: any, payload: any) => cb(payload);
+      ipcRenderer.on(`updater:${event}`, listener);
+      return () => ipcRenderer.removeListener(`updater:${event}`, listener);
+    },
+  },
+
+  ollama: {
+    ping: (): Promise<boolean> => ipcRenderer.invoke('ollama:ping'),
+    list: (): Promise<Array<{ name: string; size: number; modified_at: string }>> =>
+      ipcRenderer.invoke('ollama:list'),
+    pull: (model: string): Promise<{ ok: boolean; error?: string }> =>
+      ipcRenderer.invoke('ollama:pull', model),
+    cancelPull: (model: string): Promise<void> =>
+      ipcRenderer.invoke('ollama:cancelPull', model),
+    delete: (model: string): Promise<{ ok: boolean; error?: string }> =>
+      ipcRenderer.invoke('ollama:delete', model),
+    onPullProgress: (cb: (p: { model: string; status: string; completed: number; total: number; percent: number | null }) => void) => {
+      const listener = (_e: any, payload: any) => cb(payload);
+      ipcRenderer.on('ollama:pullProgress', listener);
+      return () => ipcRenderer.removeListener('ollama:pullProgress', listener);
+    },
+  },
 });

@@ -81,6 +81,15 @@ echo ""
 echo "Czyszczę pozostałości poprzedniej kompilacji..."
 rm -rf dist dist-electron release
 
+# Odmontuj wszystkie podpięte wcześniej obrazy DMG aplikacji (gdyby został z poprzedniego buildu)
+# – ich obecność powoduje "hdiutil detach exit code 16" przy następnym budowaniu DMG.
+for VOL in "/Volumes/AI IDE"*; do
+  if [ -d "$VOL" ]; then
+    echo "Odmontowuję pozostały wolumin: $VOL"
+    hdiutil detach -force "$VOL" 2>/dev/null || true
+  fi
+done
+
 echo ""
 echo "Buduję aplikację..."
 npm run build
