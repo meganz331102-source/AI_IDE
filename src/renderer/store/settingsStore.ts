@@ -6,6 +6,8 @@ const LS = {
   autoApply: 'aiide.settings.autoApply',
   fontSize: 'aiide.settings.fontSize',
   snippets: 'aiide.settings.snippets',
+  ollamaModel: 'aiide.settings.ollamaModel',
+  autoUpdate: 'aiide.settings.autoUpdate',
 };
 
 export const DEFAULT_SYSTEM_PROMPT = [
@@ -32,6 +34,8 @@ interface SettingsState {
   autoApply: boolean;
   fontSize: number;          // 12-18 px
   snippets: Snippet[];
+  ollamaModel: string;       // wybrany model Ollamy, np. "llama3.1:8b"
+  autoUpdate: boolean;       // sprawdzaj aktualizacje przy starcie
   setShowFullPrompt: (v: boolean) => void;
   setSystemPrompt: (v: string) => void;
   resetSystemPrompt: () => void;
@@ -40,6 +44,8 @@ interface SettingsState {
   addSnippet: (s: Omit<Snippet, 'id'>) => void;
   updateSnippet: (id: string, s: Partial<Snippet>) => void;
   deleteSnippet: (id: string) => void;
+  setOllamaModel: (v: string) => void;
+  setAutoUpdate: (v: boolean) => void;
 }
 
 function loadSnippets(): Snippet[] {
@@ -53,6 +59,8 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   autoApply: localStorage.getItem(LS.autoApply) === '1',
   fontSize: Number(localStorage.getItem(LS.fontSize)) || 13,
   snippets: loadSnippets(),
+  ollamaModel: localStorage.getItem(LS.ollamaModel) || 'llama3.1:8b',
+  autoUpdate: localStorage.getItem(LS.autoUpdate) !== '0', // domyślnie WŁĄCZONE
 
   setShowFullPrompt: (v) => { localStorage.setItem(LS.showPrompt, v ? '1' : '0'); set({ showFullPrompt: v }); },
   setSystemPrompt: (v) => { localStorage.setItem(LS.sysPrompt, v); set({ systemPrompt: v }); },
@@ -78,6 +86,8 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     localStorage.setItem(LS.snippets, JSON.stringify(next));
     set({ snippets: next });
   },
+  setOllamaModel: (v) => { localStorage.setItem(LS.ollamaModel, v); set({ ollamaModel: v }); },
+  setAutoUpdate: (v) => { localStorage.setItem(LS.autoUpdate, v ? '1' : '0'); set({ autoUpdate: v }); },
 }));
 
 // Persystencja ustawień proxy

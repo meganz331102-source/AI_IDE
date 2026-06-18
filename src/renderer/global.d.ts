@@ -116,6 +116,26 @@ declare global {
         hasGitHubToken: () => Promise<boolean>;
         clearGitHubToken: () => Promise<void>;
       };
+      updater: {
+        check: () => Promise<{ ok: boolean; version?: string | null; error?: string }>;
+        download: () => Promise<{ ok: boolean; error?: string }>;
+        install: () => Promise<void>;
+        getCurrentVersion: () => Promise<string | null>;
+        on: (
+          event: 'checking' | 'available' | 'not-available' | 'error' | 'progress' | 'downloaded',
+          cb: (payload: any) => void,
+        ) => () => void;
+      };
+      ollama: {
+        ping: () => Promise<boolean>;
+        list: () => Promise<Array<{ name: string; size: number; modified_at: string }>>;
+        pull: (model: string) => Promise<{ ok: boolean; error?: string }>;
+        cancelPull: (model: string) => Promise<void>;
+        delete: (model: string) => Promise<{ ok: boolean; error?: string }>;
+        onPullProgress: (
+          cb: (p: { model: string; status: string; completed: number; total: number; percent: number | null }) => void,
+        ) => () => void;
+      };
     };
   }
 }

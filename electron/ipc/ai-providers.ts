@@ -8,6 +8,7 @@ import { ProxyAgent, fetch as undiciFetch } from 'undici';
 import { getGitHubToken } from './keychain';
 import * as keytar from 'keytar';
 import { sendChatGPT } from './chatgpt-browser';
+import { ollamaChat } from './ollama';
 
 const KEYCHAIN_SERVICE = 'ai-ide-api-keys';
 
@@ -201,6 +202,11 @@ export async function dispatchSend(modelId: string, prompt: string): Promise<str
       response = await sendChatGPT(history, ctrl.signal);
     } else if (modelId === 'duckai') {
       response = await sendDuckAi(modelId, history, ctrl.signal);
+    } else if (modelId === 'ollama' || modelId.startsWith('ollama:')) {
+      // Format dla konkretnego modelu: "ollama:llama3.1:8b" → model = "llama3.1:8b"
+      // Domyślny model jeśli sam "ollama": llama3.1:8b
+      const ollamaModel = modelId === 'ollama' ? 'llama3.1:8b' : modelId.slice('ollama:'.length);
+      response = await ollamaChat(ollamaModel, history, ctrl.signal);
     } else {
       throw new Error(`Nieznany provider: ${modelId}`);
     }

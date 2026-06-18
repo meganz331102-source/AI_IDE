@@ -3,6 +3,7 @@ import { useSettingsStore, DEFAULT_SYSTEM_PROMPT } from '../../store/settingsSto
 import { useProjectStore } from '../../store/projectStore';
 import { PrivacyTab } from './PrivacyTab';
 import { ModelsTab } from './ModelsTab';
+import { UpdatesTab } from './UpdatesTab';
 
 interface Repo {
   fullName: string;
@@ -21,7 +22,7 @@ export function Settings({ onClose }: { onClose: () => void }) {
   const [user, setUser] = useState<User | null>(null);
   const [repos, setRepos] = useState<Repo[] | null>(null);
   const [loadingRepos, setLoadingRepos] = useState(false);
-  const [tab, setTab] = useState<'general' | 'models' | 'prompt' | 'snippets' | 'privacy' | 'github'>('general');
+  const [tab, setTab] = useState<'general' | 'models' | 'prompt' | 'snippets' | 'privacy' | 'github' | 'updates'>('general');
   const [saved, setSaved] = useState(false);
   const [repoFilter, setRepoFilter] = useState('');
   const [cloning, setCloning] = useState<string | null>(null);
@@ -140,9 +141,12 @@ export function Settings({ onClose }: { onClose: () => void }) {
             <SidebarItem active={tab === 'snippets'} onClick={() => setTab('snippets')}>Snippety</SidebarItem>
             <SidebarItem active={tab === 'privacy'} onClick={() => setTab('privacy')}>Prywatność</SidebarItem>
             <SidebarItem active={tab === 'github'} onClick={() => setTab('github')}>GitHub</SidebarItem>
+            <SidebarItem active={tab === 'updates'} onClick={() => setTab('updates')}>Aktualizacje</SidebarItem>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-5">
+          <div className="flex-1 overflow-y-auto scrollbar-thin p-5">
+            {tab === 'updates' && <UpdatesTab />}
+
             {tab === 'general' && (
               <div className="space-y-5">
                 <Section title="Wygląd czatu" desc="Co widzisz po wysłaniu wiadomości do AI.">
@@ -314,7 +318,7 @@ export function Settings({ onClose }: { onClose: () => void }) {
                             {cloneError}
                           </div>
                         )}
-                        <div className="max-h-64 space-y-1 overflow-y-auto">
+                        <div className="max-h-64 space-y-1 overflow-y-auto scrollbar-thin">
                           {filtered?.map((r) => (
                             <div key={r.fullName} className="flex items-center justify-between gap-2 rounded-md px-2.5 py-2 text-[11px] hover:bg-white/[0.04]">
                               <div className="min-w-0 flex-1">

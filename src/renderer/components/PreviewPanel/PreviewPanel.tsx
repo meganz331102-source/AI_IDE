@@ -41,47 +41,72 @@ export function PreviewPanel() {
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
+  // Cache: ostatnio użyty URL per rootPath – nie znika z iframe podczas re-detect.
+  const lastUrlByRoot = useRef<Map<string, string>>(new Map());
+
   useEffect(() => {
     if (!rootPath) { setUrl(null); return; }
     setError(null);
     setNeedsPick(false);
-    setIsExternal(false);
     setPicked(null);
     setDevLog('');
 
-    // Najpierw sprawdź status dev servera (może już chodzi)
-    (async () => {
-      const status = await window.aiIDE.devServer.status();
-      setDevStatus(status);
+    // Jeśli mamy cache dla tego rootPath – pokaż od razu, równolegle re-detect.
+    const cached = lastUrlByRoot.current.get(rootPath);
+    if (cached) {
+      setUrl(cached);
+      setAddressInput(cached.startsWith('http://127.0.0.1') ? new URL(cached).pathname : cached);
+    }
 
-      // Detekcja frameworka z package.json
-      const det = await window.aiIDE.devServer.detect(rootPath);
+    // Parallel: status, detect, preview.start.
+    // Wcześniej szły sekwencyjnie (3 awaitsy) – łącznie 200-800ms na nic.
+    (async () => {
+      const [statusResult, detResult, startResult] = await Promise.allSettled([
+        window.aiIDE.devServer.status(),
+        window.aiIDE.devServer.detect(rootPath),
+        window.aiIDE.preview.start(rootPath),
+      ]);
+
+      const status: DevServerStatus = statusResult.status === 'fulfilled' ? statusResult.value : { running: false };
+      const det = detResult.status === 'fulfilled' ? detResult.value : null;
+      const startData = startResult.status === 'fulfilled' ? startResult.value : null;
+
+      setDevStatus(status);
       setDetectedFramework(det?.framework || null);
       setDepsInstalled(det?.installed ?? true);
 
-      // Jeśli dev server już chodzi dla TEGO root – użyj jego URL
+      // Priorytet 1: aktywny dev server
       if (status.running && status.url) {
         setUrl(status.url);
         setBaseUrl(status.url);
         setAddressInput(status.url);
-        setIsExternal(true); // external = bez wstrzykiwania pickera (cross-origin)
+        setIsExternal(true);
+        lastUrlByRoot.current.set(rootPath, status.url);
         return;
       }
 
-      // Inaczej – uruchom statyczny serwer projektu, szukaj index.html
-      const { url: serverUrl, indexPath } = await window.aiIDE.preview.start(rootPath);
-      setBaseUrl(serverUrl);
+      // Priorytet 2: statyczny serwer + znaleziony index.html
+      if (startData) {
+        setBaseUrl(startData.url);
+        if (startData.indexPath) {
+          const full = startData.url.replace(/\/$/, '') + '/' + startData.indexPath.replace(/^\//, '');
+          setUrl(full);
+          setIsExternal(false);
+          setAddressInput('/' + startData.indexPath);
+          lastUrlByRoot.current.set(rootPath, full);
+          return;
+        }
+      }
 
-      if (indexPath) {
-        const full = serverUrl.replace(/\/$/, '') + '/' + indexPath.replace(/^\//, '');
-        setUrl(full);
-        setAddressInput('/' + indexPath);
-      } else {
+      // Priorytet 3: lista .html do wyboru
+      try {
         const list = await window.aiIDE.preview.listHtml(rootPath);
         setHtmlFiles(list);
         setNeedsPick(true);
-        setUrl(null);
+        if (!cached) setUrl(null);
         setAddressInput('/');
+      } catch (e) {
+        setError(String((e as any)?.message || e));
       }
     })().catch((e) => setError(String(e?.message || e)));
   }, [rootPath]);
@@ -271,7 +296,7 @@ export function PreviewPanel() {
       {/* Log dev servera */}
       {showDevLog && (
         <div className="shrink-0 border-b border-white/[0.06] bg-black/40 p-2">
-          <pre className="max-h-32 overflow-y-auto whitespace-pre-wrap font-mono text-[10px] leading-tight text-neutral-400">{devLog || '(brak logów)'}</pre>
+          <pre className="max-h-32 overflow-y-auto scrollbar-thin whitespace-pre-wrap font-mono text-[10px] leading-tight text-neutral-400">{devLog || '(brak logów)'}</pre>
         </div>
       )}
 
@@ -296,7 +321,7 @@ export function PreviewPanel() {
             Błąd: {error}
           </div>
         ) : needsPick ? (
-          <div className="flex h-full flex-col items-center justify-start overflow-y-auto bg-[#0c0c10] p-6">
+          <div className="flex h-full flex-col items-center justify-start overflow-y-auto scrollbar-thin bg-[#0c0c10] p-6">
             <div className="mb-3 text-3xl text-neutral-700">▣</div>
             <div className="mb-1 text-center text-[12px] text-neutral-300">Nie znalazłem index.html w typowych miejscach</div>
             <div className="mb-4 max-w-md text-center text-[10.5px] text-neutral-500">
@@ -323,7 +348,7 @@ export function PreviewPanel() {
             ) : (
               <>
                 <div className="mb-2 text-[10.5px] text-neutral-500">lub wybierz plik:</div>
-                <div className="max-h-72 w-full max-w-md space-y-1 overflow-y-auto">
+                <div className="max-h-72 w-full max-w-md space-y-1 overflow-y-auto scrollbar-thin">
                   {htmlFiles.map((rel) => (
                     <button key={rel} onClick={() => pickHtmlFile(rel)} className="w-full truncate rounded-md bg-white/[0.04] px-3 py-1.5 text-left text-[11.5px] font-mono text-neutral-200 ring-1 ring-white/[0.06] hover:bg-white/[0.07]">
                       {rel}
