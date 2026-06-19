@@ -156,6 +156,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   margin: 0.6em 0;
   padding: 10px 12px;
   overflow-x: auto;
+  max-width: 100%;
 }
 .md-message pre code {
   font-family: 'SF Mono', Menlo, Consolas, monospace;
@@ -163,6 +164,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   line-height: 1.5;
   color: #e5e7eb;
   background: transparent;
+  white-space: pre;
+  word-break: normal;
 }
 .md-message pre .copy-btn {
   position: absolute;

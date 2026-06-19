@@ -47,7 +47,7 @@ export function App() {
 
   // FIX: jeśli localStorage przechowuje szerokości z większego ekranu, suma kolumn
   // przekracza okno → grid wycina trzecią kolumnę (chat) przez overflow-hidden.
-  // Klampujemy widths do aktualnego viewportu.
+  // Klampujemy widths do aktualnego viewportu. Priorytet: nie ścinaj chatu.
   useEffect(() => {
     const clamp = () => {
       const w = window.innerWidth;
@@ -56,11 +56,17 @@ export function App() {
       const minRight = 380;
       const splitters = 8;
       const available = w - splitters - minMiddle;
-      // Najpierw kurczymy right, potem left.
       let l = leftWidth, r = rightWidth;
+      // Najpierw kurczymy LEFT (file explorer), potem RIGHT (chat) — chat ma priorytet.
       if (l + r > available) {
-        r = Math.max(minRight, Math.min(r, available - l));
-        if (l + r > available) l = Math.max(minLeft, available - r);
+        l = Math.max(minLeft, Math.min(l, available - r));
+        if (l + r > available) r = Math.max(minRight, available - l);
+        // Skrajny przypadek: okno tak małe, że nawet minima nie mieszczą się.
+        // Wtedy chat dostaje cokolwiek zostało, byle nie 0.
+        if (l + r > available) {
+          l = minLeft;
+          r = Math.max(240, available - l);
+        }
       }
       if (l !== leftWidth) setLeftWidth(l);
       if (r !== rightWidth) setRightWidth(r);
@@ -208,13 +214,13 @@ export function App() {
         <div
           ref={containerRef}
           className="grid flex-1 overflow-hidden"
-          style={{ gridTemplateColumns: `${leftWidth}px 4px 1fr 4px ${rightWidth}px` }}
+          style={{ gridTemplateColumns: `${leftWidth}px 4px minmax(0, 1fr) 4px ${rightWidth}px` }}
         >
-          <FileExplorer />
+          <div className="min-w-0 overflow-hidden"><FileExplorer /></div>
           <div onMouseDown={startDrag('left')} className={`splitter ${dragging === 'left' ? 'active' : ''}`} />
-          <MiddlePanel />
+          <div className="min-w-0 overflow-hidden"><MiddlePanel /></div>
           <div onMouseDown={startDrag('right')} className={`splitter ${dragging === 'right' ? 'active' : ''}`} />
-          <AIChatPanel onOpenSettings={() => setShowSettings(true)} />
+          <div className="min-w-0 overflow-hidden"><AIChatPanel onOpenSettings={() => setShowSettings(true)} /></div>
         </div>
       )}
 

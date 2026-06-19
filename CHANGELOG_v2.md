@@ -1,3 +1,10 @@
+# AI IDE v2.18.0 — major bugfixes
+
+## Naprawione
+- **Podgląd blank-outuje się przy kliknięciu w link** — `PICKER_SCRIPT` w `preview-server.ts` teraz przechwytuje external anchor clicks (`http://`, `mailto:`, `target="_blank"`) i form submits, nie pozwalając im wywalić iframe na `about:blank`. External linki idą jako `AIIDE_OPEN_EXTERNAL` do parenta. Picker w trybie aktywnym ma fallback na `document.elementFromPoint` gdy `hoveredEl` jest null.
+- **Czat się rozjeżdża przy długich code-blockach** — bubble messages dostały `min-w-0 max-w-full overflow-hidden`, scroll container dostał `min-w-0 overflow-x-hidden`. `<pre>` w markdown ma teraz `max-width: 100%` i `code` w środku `white-space: pre` (nie zawija na sztywno, scrolluje horyzontalnie w bubble). Długi kod nie rozpycha już kolumny.
+- **Kolumna czatu źle się skaluje przy resize okna** — clamp logic w `App.tsx` odwrócony: priorytetem jest teraz CHAT, nie FileExplorer. Najpierw kurczy się left (drzewo plików), potem right (chat). Skrajny przypadek (okno < suma minimów) daje chat 240px minimum zamiast wycinania. Grid kolumn dostał `minmax(0, 1fr)` zamiast `1fr` plus każdy child opakowany w `min-w-0 overflow-hidden` — to faktyczna naprawa "content rozpycha kolumnę".
+
 # AI IDE v2.9.0 — zmiany
 
 ## Nowe

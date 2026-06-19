@@ -295,7 +295,7 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
 
   return (
     <div
-      className="grid h-full min-h-0 bg-[#0a1216]"
+      className="grid h-full min-h-0 min-w-0 bg-[#0a1216]"
       style={{ gridTemplateRows: 'auto auto minmax(0, 1fr) auto' }}
     >
       {challenge && (
@@ -360,7 +360,7 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
         </div>
       </div>
 
-      <div ref={scrollRef} className="min-h-0 space-y-3 overflow-y-auto scrollbar-thin p-3" style={{ fontSize }}>
+      <div ref={scrollRef} className="min-h-0 min-w-0 space-y-3 overflow-y-auto overflow-x-hidden scrollbar-thin p-3" style={{ fontSize }}>
         {messages.length === 0 && !isSending && (
           <div className="flex h-full flex-col items-center justify-center text-center text-neutral-600">
             <div className="mb-3 text-3xl">✦</div>
@@ -377,7 +377,7 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
           return (
             <div
               key={msg.id}
-              className={`group relative min-w-0 rounded-xl px-3.5 py-2.5 leading-relaxed shadow-sm ${
+              className={`group relative min-w-0 max-w-full overflow-hidden rounded-xl px-3.5 py-2.5 leading-relaxed shadow-sm ${
                 msg.role === 'user'
                   ? 'ml-8 bg-[#38a3a5]/15 ring-1 ring-[#38a3a5]/30 text-neutral-100'
                   : msg.role === 'system'
