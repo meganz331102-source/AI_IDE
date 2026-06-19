@@ -1,3 +1,12 @@
+# AI IDE v2.19.0 — chat overflow, dev-server loop, model picker
+
+## Naprawione
+- **Chat wychodzi poza obrys aplikacji po otwarciu repo** — `html`, `body`, `#root` dostały `overflow: hidden` + `width: 100%`, root `<App>` dostał `overflow-hidden`, clamp kolumn reaguje też na zmianę `rootPath` (pierwszy render gridu po Welcome → Project).
+- **Podgląd dev-servera odpalał się i sam wyłączał w pętli** — `dev-server.ts` przestał próbować restartować Next.js po wykryciu "Another next dev server already running". Logika kasowała PID i recursive `start()`, a każdy nowy spawn znów widział ten sam komunikat → nieskończona pętla restartów. Teraz po prostu logujemy info i czekamy aż regex URL złapie nowy port (Next.js sam przeskakuje z 3000 na 3001).
+
+## Nowe
+- **Nowy picker modeli AI** (`ModelPicker.tsx`) — zamiast horyzontalnego scrolla buttonów, kompaktowy dropdown z wyszukiwarką, grupowaniem po providerze (Pollinations / Groq / Ollama / Eksperymentalne), opisem każdego modelu i badge'ami statusu (FREE / KLUCZ / LOCAL / BETA). Pokazuje aktywny model + jego opis w pasku zwiniętym, w rozwiniętym filtrowanie po nazwie i opisie.
+
 # AI IDE v2.18.0 — major bugfixes
 
 ## Naprawione

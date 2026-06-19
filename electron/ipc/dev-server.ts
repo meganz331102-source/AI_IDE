@@ -239,24 +239,14 @@ export async function start(rootPath: string): Promise<{ ok: boolean; framework:
       // Strippujemy ANSI escape codes żeby regex działał poprawnie
       const clean = text.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '');
 
-      // Wykryj konflikt: "Another next dev server is already running"
-      // Next.js exituje – zabijamy konfliktujący proces (PID z logu) i restartujemy
+      // Wykryj konflikt: "Another next dev server is already running".
+      // NIE restartujemy — Next.js i tak automatycznie wybiera inny port
+      // (np. 3001 zamiast 3000), więc po prostu logujemy info i czekamy aż
+      // zwykły regex URL złapie nowy port. Restart powodował nieskończoną
+      // pętlę: każdy nowy spawn też widział ten sam komunikat.
       if (!conflictHandled && /Another.*already running/i.test(clean)) {
         conflictHandled = true;
-        // PID szukamy w całym dotychczasowym output (może być w poprzednim chunk)
-        const fullClean = current.output.join('').replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '');
-        const pidMatch = fullClean.match(/PID:\s*(\d+)/);
-        if (pidMatch) {
-          const conflictPid = parseInt(pidMatch[1], 10);
-          broadcast('devServer:log', `\n[AI IDE] Zabijam konfliktujący serwer (PID ${conflictPid}) i restartuję...\n`);
-          try { process.kill(conflictPid, 'SIGTERM'); } catch {}
-        }
-        setTimeout(async () => {
-          proc.kill('SIGTERM');
-          if (current?.process === proc) current = null;
-          await start(rootPath); // nowy start → broadcast devServer:ready z nowym URL
-        }, 1500);
-        return;
+        broadcast('devServer:log', `\n[AI IDE] Wykryto inny dev server na domyślnym porcie. Next.js użyje innego portu automatycznie. Aby zwolnić port 3000: kliknij Stop i odpal ponownie.\n`);
       }
 
       // Wykryj URL serwera (strip ANSI żeby nie złapać kolorowanego URL z error msg)
