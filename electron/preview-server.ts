@@ -62,20 +62,43 @@ const PICKER_SCRIPT = `
     }
   }
   function onClick(e) {
-    if (!active || !hoveredEl) return;
+    if (!active) {
+      // Picker NIEaktywny — blokuj external navigation (anchor + form submit),
+      // które wywalają iframe na "about:blank" lub blank-outują podgląd.
+      var anchor = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (anchor) {
+        var href = anchor.getAttribute('href') || '';
+        var isExternal = /^(https?:|mailto:|tel:)/i.test(href) || (anchor.target === '_blank');
+        if (isExternal) {
+          e.preventDefault();
+          e.stopPropagation();
+          window.parent.postMessage({ type: 'AIIDE_OPEN_EXTERNAL', url: anchor.href }, '*');
+        }
+      }
+      return;
+    }
+    // Picker aktywny — przechwyć klik i poślij info o elemencie
     e.preventDefault();
     e.stopPropagation();
-    const selector = getSelector(hoveredEl);
-    const outerHTML = hoveredEl.outerHTML.slice(0, 2500);
-    const text = (hoveredEl.textContent || '').trim().slice(0, 240);
+    var target = hoveredEl || (document.elementFromPoint(e.clientX, e.clientY));
+    if (!target) return;
+    var selector = getSelector(target);
+    var outerHTML = target.outerHTML.slice(0, 2500);
+    var text = (target.textContent || '').trim().slice(0, 240);
     window.parent.postMessage({
       type: 'AIIDE_ELEMENT_PICKED',
       selector: selector,
       outerHTML: outerHTML,
       text: text,
-      tagName: hoveredEl.tagName.toLowerCase(),
+      tagName: target.tagName.toLowerCase(),
     }, '*');
     setActive(false);
+  }
+  function onSubmit(e) {
+    // Form submit w statycznym podglądzie nawiguje iframe gdzieś indziej
+    // i robi blank-out. Blokujemy zawsze (i tak nie ma backendu do obsługi).
+    e.preventDefault();
+    e.stopPropagation();
   }
   function setActive(on) {
     active = on;
@@ -94,6 +117,7 @@ const PICKER_SCRIPT = `
   });
   document.addEventListener('mousemove', onMouseMove, true);
   document.addEventListener('click', onClick, true);
+  document.addEventListener('submit', onSubmit, true);
 })();
 </script>`;
 
