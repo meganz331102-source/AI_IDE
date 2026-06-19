@@ -9,6 +9,7 @@ import type { AIModelId, ProposedChange, ProjectFile } from '../../../shared/typ
 import { DiffViewer } from '../DiffViewer/DiffViewer';
 import { parseProposedChanges } from '../DiffViewer/changeParser';
 import { MarkdownMessage } from './MarkdownMessage';
+import { ModelPicker } from './ModelPicker';
 import { BotChallengeModal } from '../BotChallengeModal';
 
 function flattenFiles(nodes: ProjectFile[]): ProjectFile[] {
@@ -313,24 +314,8 @@ export function AIChatPanel({ onOpenSettings }: AIChatPanelProps = {}) {
         />
       )}
 
-      <div className="chat-model-bar flex shrink-0 items-center gap-2 border-b border-white/[0.06] bg-[#0a1216] p-2">
-        <div className="flex-1 min-w-0 overflow-x-auto scrollbar-thin">
-          <div className="flex w-max gap-0.5 rounded-lg bg-white/[0.03] p-0.5">
-            {Object.values(AI_MODELS).map((model) => (
-              <button
-                key={model.id}
-                onClick={() => handleModelSwitch(model.id)}
-                className={`whitespace-nowrap rounded-md px-2.5 py-1 text-[11px] font-medium transition ${
-                  activeModel === model.id
-                    ? 'bg-[#38a3a5] text-white shadow-sm'
-                    : 'text-neutral-400 hover:bg-white/[0.05] hover:text-neutral-200'
-                }`}
-              >
-                {model.label}
-              </button>
-            ))}
-          </div>
-        </div>
+      <div className="chat-model-bar relative z-20 flex shrink-0 items-center gap-2 border-b border-white/[0.06] bg-[#0a1216] p-2">
+        <ModelPicker activeModel={activeModel} onSelect={handleModelSwitch} />
         <button
           onClick={handleNewChat}
           title="Nowy czat (⌘N)"

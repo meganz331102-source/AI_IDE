@@ -48,6 +48,8 @@ export function App() {
   // FIX: jeśli localStorage przechowuje szerokości z większego ekranu, suma kolumn
   // przekracza okno → grid wycina trzecią kolumnę (chat) przez overflow-hidden.
   // Klampujemy widths do aktualnego viewportu. Priorytet: nie ścinaj chatu.
+  // Reagujemy też na zmianę rootPath bo Welcome → Grid to pierwszy moment kiedy
+  // kolumny faktycznie istnieją.
   useEffect(() => {
     const clamp = () => {
       const w = window.innerWidth;
@@ -74,7 +76,7 @@ export function App() {
     clamp();
     window.addEventListener('resize', clamp);
     return () => window.removeEventListener('resize', clamp);
-  }, [leftWidth, rightWidth]);
+  }, [leftWidth, rightWidth, rootPath]);
 
   useEffect(() => { localStorage.setItem(LS_LEFT, String(leftWidth)); }, [leftWidth]);
   useEffect(() => { localStorage.setItem(LS_RIGHT, String(rightWidth)); }, [rightWidth]);
@@ -146,7 +148,7 @@ export function App() {
   };
 
   return (
-    <div className="flex h-screen w-screen flex-col bg-[#0a1216] text-neutral-100">
+    <div className="flex h-screen w-screen flex-col overflow-hidden bg-[#0a1216] text-neutral-100">
       <div
         className="flex shrink-0 items-center justify-between border-b border-white/[0.06] py-2.5 pr-3"
         style={{ paddingLeft: 88, WebkitAppRegion: 'drag' } as React.CSSProperties}
