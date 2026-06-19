@@ -1,0 +1,12 @@
+JAK URUCHOMIĆ AI IDE v2.0.0
+============================
+
+1. Rozpakuj ZIP.
+2. Kliknij dwukrotnie plik:   Zainstaluj_AI_IDE.command
+3. Poczekaj kilka minut (instaluje co trzeba i buduje appkę).
+4. Sam się otworzy plik .dmg — przeciągnij ikonę AI IDE do Applications.
+5. Od tej pory: Launchpad → AI IDE. Tyle.
+
+Jeśli przy pierwszym dwukliku macOS powie "nie można otworzyć,
+bo plik jest od nieznanego dewelopera":
+  → kliknij prawym → Otwórz → Otwórz w okienku.

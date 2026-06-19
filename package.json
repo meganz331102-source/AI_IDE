@@ -1,0 +1,87 @@
+{
+  "name": "ai-ide",
+  "version": "2.17.0",
+  "description": "Lokalna aplikacja AI IDE dla macOS \u2013 wiele modeli AI przez sesje przegl\u0105darki, bez oficjalnych API",
+  "main": "dist-electron/electron/main.js",
+  "author": "AI IDE",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k \"npm:dev:vite\" \"npm:dev:electron\"",
+    "dev:vite": "vite",
+    "dev:electron": "tsc -p electron/tsconfig.json --watch --preserveWatchOutput & wait-on dist-electron/electron/main.js && cross-env NODE_ENV=development electron .",
+    "build": "npm run build:vite && npm run build:electron",
+    "build:vite": "vite build",
+    "build:electron": "tsc -p electron/tsconfig.json",
+    "dist": "npm run build && electron-builder --mac",
+    "dist:dmg": "npm run build && electron-builder --mac dmg",
+    "playwright:install": "playwright install chromium",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p electron/tsconfig.json",
+    "lint": "eslint src electron --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "dompurify": "^3.1.7",
+    "highlight.js": "^11.10.0",
+    "keytar": "^7.9.0",
+    "marked": "^14.1.3",
+    "playwright": "^1.47.0",
+    "simple-git": "^3.27.0",
+    "undici": "^6.20.0",
+    "zustand": "^4.5.5",
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "@monaco-editor/react": "^4.6.0",
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/node": "^22.5.4",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.0.1",
+    "cross-env": "^7.0.3",
+    "electron": "^32.1.0",
+    "electron-builder": "^25.0.5",
+    "postcss": "^8.4.45",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.3",
+    "wait-on": "^8.0.0"
+  },
+  "build": {
+    "appId": "com.local.ai-ide",
+    "productName": "AI IDE",
+    "directories": {
+      "output": "release"
+    },
+    "artifactName": "AI_IDE_v${version}.${ext}",
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "build/icon.icns",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "meganz331102-source",
+        "repo": "AI_IDE",
+        "releaseType": "release"
+      }
+    ]
+  }
+}
